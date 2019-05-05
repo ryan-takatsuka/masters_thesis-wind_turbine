@@ -1,0 +1,100 @@
+\begin{thebibliography}{10}
+
+\bibitem{k_NN_algorithm}
+K-nearest neighbors.
+\newblock {\em Scholarpedia}, 2009.
+
+\bibitem{LIA_fig}
+Lock-in amplifier and applications.
+\newblock 2011.
+
+\bibitem{LIA_document}
+About lock-in amplifiers.
+\newblock {\em thinkSRS}, 2017.
+
+\bibitem{envelope_detector_ref}
+Envelope detection.
+\newblock {\em MathWorks}, 2018.
+
+\bibitem{wiki:FIR_block_diagram}
+Wikipedia: Finite impuse response.
+\newblock \url{https://en.wikipedia.org/wiki/Finite_impulse_response}, 2018.
+
+\bibitem{wiki:IIR_block_diagram}
+Wikipedia: Infinite impulse response.
+\newblock \url{https://en.wikipedia.org/wiki/Infinite_impulse_response}, 2018.
+
+\bibitem{embedded_goertzel}
+K.~Banks.
+\newblock The goertzel algorithm.
+\newblock {\em Embedded}, 2002.
+
+\bibitem{zoom_fft_ref}
+D.~A.~R. Collins.
+\newblock Zoom fft.
+
+\bibitem{WT_failures_paper}
+R.~M. Edward~Malnick.
+\newblock 15000 accidents and incidents on uk wind farms.
+\newblock {\em Telegraph}, 2011.
+
+\bibitem{berkeley_goertzel}
+B.~Evans.
+\newblock Goertzel algorithm.
+\newblock {\em Berkeley}.
+
+\bibitem{Gwon_paper}
+T.~Gwon.
+\newblock Structural analyses of wind turbine tower for 3 kw horizontal-axis
+  wind turbine.
+\newblock {\em California Polytechnic State University, SLO}, 2011.
+
+\bibitem{TI_goertzel}
+T.~Instruments.
+\newblock Modified goertzel algorithm in dtmf detection using the tms320c80.
+\newblock {\em Digital Signal Processing Solutions}, 1996.
+
+\bibitem{decimation_ref}
+I.~International.
+\newblock Decimation.
+\newblock {\em dspGuru}, 2017.
+
+\bibitem{embedded_zoom_fft}
+R.~Lyons.
+\newblock Using zoom fft for spectral analysis.
+\newblock {\em Embedded}, 2011.
+
+\bibitem{wind_turbine_failures}
+E.~G. Maik~Reder, Julio~Melero.
+\newblock Wind turbine failures - tackling current problems in failure data
+  analysis.
+\newblock {\em Journal of Physics Conference Series}, 2016.
+
+\bibitem{cantilever_beam_ref}
+W.~McCutcheon.
+\newblock Deflections and stresses in circular tapered beams and poles.
+\newblock {\em Civil Engineering for Practicing and Design Engineers}, 1983.
+
+\bibitem{NSET_vibration_modeling}
+D.~I. Peng~Guo.
+\newblock Wind turbine tower vibration modeling and monitoring by the nonlinear
+  state estimation technique (nset).
+\newblock {\em MDPI}, 2012.
+
+\bibitem{SG_filter}
+W.~H. Press and S.~A. Teukolsky.
+\newblock Savitzky-golay smoothing filters.
+\newblock {\em American Institute of Physics}, 1990.
+
+\bibitem{UK_turbine_failures}
+M.~D. Reder.
+\newblock Wind turbine failures - tackling current problems in failure datra
+  analysis.
+\newblock {\em Journal of Physics: Conference Series}, 2016.
+
+\bibitem{data_driven_online_monitoring}
+A.~D.~B. Thomas~Kenbeek, Stella~Kapodistria.
+\newblock Data driven online monitoring of wind turbines.
+\newblock 2016.
+
+\end{thebibliography}

@@ -1,0 +1,8 @@
+This thesis develops a model of the Cal Poly Wind Turbine that is used to determine if there is an imbalance in the turbine.  A theoretical model is derived to estimate the expected vibrations when there is an imbalance in the rotor.  Vibration and acceleration data are collected from the turbine tower during operation to confirm the model is useful and accurate for determining imbalances in the turbine.  
+
+Various signal processing techniques for analyzing the vibration data are explored and tested with the simulation.  This includes frequency shifts, lock-in amplifiers, phase-locked loops, discrete Fourier transforms, and various filters.  The processed data is fed into an algorithm that determines if there is an imbalance.
+
+The detection algorithm consists of a machine learning classification model that uses experimental data to train and increase the success rate of the imbalance detection.  The model uses the maximum frequency component and magnitude as an input to classify the data as ``balanced" or ``not balanced" using the K-nearest neighbors algorithm.  While this classification algorithm requires slightly more computational power than others, it is simple to implement and has a high accuracy rating.
+
+\todo{Add a quick summary of the results.}
+

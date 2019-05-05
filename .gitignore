@@ -1,2 +1,16 @@
 
 *.pyc
+*.yml
+*.aux
+*.log
+*.bcf
+*.blg
+*.glo
+*.idx
+*.ist
+*.lof
+*.lot
+*.out
+*.xml
+*.gz
+*.toc
