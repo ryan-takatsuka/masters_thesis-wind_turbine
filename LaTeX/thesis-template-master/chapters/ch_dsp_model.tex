@@ -120,6 +120,74 @@ Lock-in amplifiers are typically used when the frequency is relatively stable an
 	\label{fig:200_RPM_LIA_output_sim}
 \end{figure}
 
+
+\subsubsection{Types of low-pass filters}
+The filter choice is very important for a lock-in amplifier.  Some of the common options are finite impulse response (FIR) filters, and infinite impulse response (IIR) filters, and the Savitzky-Golay (SG) filter.
+
+The IIR filter is shown in Figure \ref{fig:freq_mag_IIR_filter}, which significantly smooths the data, but at the cost of some time-domain distortion.  An IIR filter uses past states in the output calculation, meaning an impulse input signal will affect the filter output forever (\textit{infinite} impulse response filter).  This results in a transfer function as follows:
+
+\begin{equation}
+	T(z) = \frac{b(z)}{a(z)}
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.5]{IIR_block_diagram}
+	\decoRule
+	\caption{A block diagram of a standard IIR filter. \cite{wiki:IIR_block_diagram}}
+	\label{fig:IIR_block_diagram}
+\end{figure}
+
+
+Figure \ref{fig:IIR_filter_response} shows the result of a Butterworth IIR filter compared to a moving average filter.  This shows that a customized filter is much more effective than standard moving average methods of smoothing data.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{IIR_filter_response}
+	\decoRule
+	\caption{The filter response of the Butterworth IIR filter (Equation \ref{eq:IIR_tf}) compared to a moving average filter with a window size of 4.  This figure was created in MATLAB with 2 simulated filter designs.}
+	\label{fig:IIR_filter_response}
+\end{figure}
+
+
+Another filter alternative is the FIR filter, which does not rely on past states to calculate the filter output.  This results in a finite response to an impulse input and a linear phase.  A common FIR filter that is used for smoothing data is a moving average (where all of the filter coefficients are identical).  To achieve a more customized filter for this data, a FIR filter is designed using the Window method, which designs a FIR filter using a specified window.  Figure \ref{fig:FIR_block_diagram} shows a block diagram of a FIR filter.  One of the most common uses of FIR filters is to decimate a signal (not having to calculate previous states allows for some significant optimizations when decimation is involved).  Because the past states are not used, the transfer function has a denominator of 1:
+
+\begin{equation}
+	T(z) = \frac{b(z)}{1}
+\end{equation}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.3]{FIR_block_diagram}
+	\decoRule
+	\caption{A block diagram of a standard FIR filter. \cite{wiki:FIR_block_diagram}}
+	\label{fig:FIR_block_diagram}
+\end{figure}
+
+Another filter option for this data is the Savitzky-Golay (SG) filter, which increases the signal-to-noise ratio with out significantly distorting the signal.  The SG filter uses convolution to fit a polynomial on a sliding window to the data.  The output of this filter can be calculated using the following equation \cite{SG_filter}:
+
+\begin{equation} \label{eq:SG_filter}
+	Y_j = (\mat{C} \otimes y)_j = \sum_{i=-\frac{m-1}{2}}^{\frac{m-1}{2}} C_iy_{j+i}
+\end{equation}
+
+$C_i$ are the convolution coefficients ($m$ total coefficients), $y$ is the sampled data point, and $j$ is the index of the data point. 
+
+The convolution coefficients can be selected from a table, but it is much more robust to calculate them prior to performing any filtering.  The convolution coefficients, $\mat{C}$, are calculated using a variable change.  The time vector for a given window, $\vec{x}$, is converted to $\vec{z}$ using the time step ($\Delta t$) with the following equation:
+
+\begin{equation}
+	z = \frac{\vec{x} - \bar{x}}{\Delta t}
+\end{equation}
+
+$\bar{x}$ is the time value at the central point of the window.  $\vec{z}$ is used to calculate the matrix $\mat{J}$, where each $i\mathrm{-th}$row of $\mat{J}$ has the values $1, z_i, z_i^2, z_i^3, ..., z_i^n$.  After $\mat{J}$ has been created, the convolution coefficients can be calculated as follows:
+
+\begin{equation}
+	\mat{C} = \left(\mat{J^TJ}\right)^{-1}\mat{J^T}
+\end{equation}
+
+The filtered data can then be calculated as the convolution of $\mat{C}$ and the unfiltered data (Equation \ref{eq:SG_filter}).
+
+
+
 \subsection{Identifying the rotor frequency from the tower accelerations}
 If the rotor frequency cannot be measured directly it is possible to obtain the frequency indirectly from the acceleration data.  A phase-locked loop is a control system that minimizes the phase between to signals.  As the phase error is driven to zero, the output signal frequency approaches the input signal's frequency.  Phase-locked loops (PLLs) are commonly used in telecommunications where the frequency of a noisy signal can be recreated with an internal oscillator that locks on to the frequency of the noisy signal.  Figure \ref{fig:PLL_diagram} shows a block diagram of the PLL implementation with tower acceleration data as the input.
 
@@ -220,7 +288,7 @@ An example of frequency translation is shown in Figure \ref{fig:MATLAB_freq_tran
 	\centering
 	\includegraphics[scale=0.7]{MATLAB_freq_translation_ex}
 	\decoRule
-	\caption{This figure shows an example of frequency translation.  The black signal is the frequency spectrum of some input signal that has a strong component at 5 Hz.  The blue signal shows the frequency shifted spectrum that results from multiplying the input signal by a reference signal with a frequency of 5 Hz (as shown in Equation \ref{eq:freq_trans_im}.  The dotted blue line shows the digital filter response.  This figure was generated with MATLAB.}
+	\caption{This figure shows an example of frequency translation.  The black signal is the frequency spectrum of some input signal that has a strong component at 5 Hz.  The blue signal shows the frequency shifted spectrum that results from multiplying the input signal by a reference signal with a frequency of 5 Hz (as shown in Equation \ref{eq:freq_trans_im}).  The dotted blue line shows the digital filter response.  This figure was generated with MATLAB.}
 	\label{fig:MATLAB_freq_translation_ex}
 \end{figure}
 
@@ -299,13 +367,13 @@ Figure \ref{fig:MATLAB_zoom_fft_ex} shows the results of a MATLAB simulation usi
 \subsubsection{Estimating processor performance}
 Comparing the computational time of different algorithms is difficult because the dominant factor is usually memory access, rather than actual floating-point operations \cite{wiki_fft}.  Evaluating the computational cost due to memory access patterns in complicated, so this analysis will only consider the computational cost of the floating-point operations (FLOPs).  To minimize the cost from memory access patterns, the algorithms will be vectorized and converted to matrix form.  Most processors have highly optimized matrix operation functions, which should hopefully make arithmetic the dominant factor when determining the computational cost.
 
-For this analysis, a STM32 processor is used as the baseline for estimating cycle counts because it is the unit used to prototype the LifeLine data acquisition device that collects experimental acceleration data from the turbine.  The STM32 has its own single precision register set to handle floating-point operations with hardware (rather than using compiled C libraries to perform the floating-point operations in many complex steps).  The floating-point unit (FPU) in the STM32 offers arithmetic instructions for the operations listed in \todo{Table XXX} \cite{stm32_floating_point}.
+For this analysis, a STM32 processor is used as the baseline for estimating cycle counts because it is the unit used to prototype the LifeLine data acquisition device that collects experimental acceleration data from the turbine.  The STM32 has its own single precision register set to handle floating-point operations with hardware (rather than using compiled C libraries to perform the floating-point operations in many complex steps).  The floating-point unit (FPU) in the STM32 offers arithmetic instructions for the operations listed in Table \ref{t:stm32_cycles} \cite{stm32_floating_point}.
 
-Many FPUs (like the one in \todo{Table XXX}), have multiply/accumulate arithmetic instructions, which means they can perform a multiplication and addition all in one step.  Additionally, division operations are much more expensive than multiplication operations and should be avoided as much as possible when designing algorithms.
+Many FPUs (like the one in Table \ref{t:stm32_cycles}), have multiply/accumulate arithmetic instructions, which means they can perform a multiplication and addition all in one step.  Additionally, division operations are much more expensive than multiplication operations and should be avoided as much as possible when designing algorithms.
 
 \begin{table}[]
 \centering
-\caption{Cycle counts for a STM32 floating-point processor}
+\caption{Cycle counts for a STM32 floating-point processor.  The exponential* operation is estimated from a floating-point performance analysis \cite{flops_performance} because it is not stated in the STM32 datasheet.}
 \label{t:stm32_cycles}
 \vspace*{0.2in}
 \begin{tabular}{|c|c|}
