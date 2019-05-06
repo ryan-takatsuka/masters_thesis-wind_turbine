@@ -58,7 +58,7 @@ class detectionModel:
 		self.le = preprocessing.LabelEncoder()
 
 		# Intialize model
-		self.model = KNeighborsClassifier(n_neighbors=5, weights='uniform')
+		self.model = KNeighborsClassifier(n_neighbors=3, weights='uniform')
 
 
 	def test_different_models(self, plot=False):
@@ -168,8 +168,8 @@ class detectionModel:
 				  % (self.model.n_neighbors, self.model.weights))
 		plt.xlabel('Maximum Peak Frequency [Hz]')
 		plt.ylabel('Maximum Peak Amplitude')
-		plt.legend(('Balanced', 'Not Balanced'))
+		plt.legend(('Class A', 'Class B'))
 
-		balanced = mpatches.Patch(color='#00FF00', label='Balanced')
-		not_balanced = mpatches.Patch(color='#FF0000', label='Not Balanced')
+		balanced = mpatches.Patch(color='#00FF00', label='Class A')
+		not_balanced = mpatches.Patch(color='#FF0000', label='Class B')
 		plt.legend(handles=[balanced, not_balanced])
