@@ -163,6 +163,116 @@ The goal of logistic regression is to create a model that best fits the experime
 
 $h_{\theta}$ is defined in Equation \ref{eq:logistic_regression_hypothesis} and $g(z)$ is defined in Equation \ref{eq:logistic_regression_cost}.  In other words, Equation \ref{eq:logistic_regression_gradient} represents an average of $(h-y)x$ for every training example and calculated with respect to each $\theta$ parameter ($j$ is the number of parameters in the model).
 
+\subsection{Training the model}
+To train the model, the cost function is minimized using a version of the gradient descent optimization process.  This iterates through various values of $\theta$ that are calculated using the gradient of the cost function.  Figure \ref{fig:logistic_regression_2_feature_cost} shows the cost function over the iteration (training) process.  When the cost function has converged to a minimum, the model training is complete and the model is ready to be validated on the test data.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_2_feature_cost}
+	\decoRule
+	\caption{This figure shows the cost function during the training process.  This model uses 2 features, so the model is trying to optimize $\vec{\theta} = [\theta_1, \theta_2, \theta_3]$ (3 parameters because there is a hidden bias unit).}
+	\label{fig:logistic_regression_2_feature_cost}
+\end{figure}
+
+\subsection{Applying the model}
+Minimizing the cost function results is a trained model that produces the decision boundary shown in Figure \ref{fig:logistic_regression_decision_boundary}.  This model has a pretty poor accuracy of about 67\% on the test data.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_decision_boundary}
+	\decoRule
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a linear model using 2 input parameters and a binary output class.  This model has an accuracy of about 67\% when using the test data set.}
+	\label{fig:logistic_regression_decision_boundary}
+\end{figure}
+
+To improve this model, the 2 input parameters can be expanded to create a higher order models.  For example, the 2 input features for a linear logistic regression model are shown in Equation \ref{eq:lr_order1}.  To achieve higher order models, the input parameters can be expanded to included the terms for the higher order polynomials.  This will allow the regression to fit parameters to each of the new inputs.  Equation \ref{eq:lr_order2} represents the input variables expanded for a 2nd order model and Equation \ref{eq:lr_order3} represents the input variables expanded for a 3rd order model.  Figure \ref{fig:logistic_regression_order2_decision_boundary} shows the decision boundary for a 2nd order model and Figure \ref{fig:logistic_regression_order3_decision_boundary} shows the decision boundary for a 3rd order model.
+\begin{align}
+	[x_1, x_2]  \label{eq:lr_order1} \\
+	[x_1, x_2, x_1^2, x_1 x_2, x_2^2] \label{eq:lr_order2} \\
+	[x_1, x_2, x_1^3, x_1^2 x_2, x_1 x_2^2, x_2^2] \label{eq:lr_order3}
+\end{align}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_order2_decision_boundary}
+	\decoRule
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 2nd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.}
+	\label{fig:logistic_regression_order2_decision_boundary}
+\end{figure}
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_order3_decision_boundary}
+	\decoRule
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 3rd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.}
+	\label{fig:logistic_regression_order3_decision_boundary}
+\end{figure}
+
+In fact, the order can keep getting increased until the model fits the training data perfectly.  This is called over-fitting and is a problem with higher order machine learning models.  Figure \ref{fig:logistic_regression_order10_decision_boundary} shows an example of a 10th order model that has some over-fitting problems.  It is unlikely that the small region separating the Class A sections (at about 2.5 Hz and 1.5 m/s/s) belongs to Class B.  In order to solve the problem of over-fitting, a regularization term can be added to the cost function equation.  This regularization term, $\lambda$, effectively reduces the impact that the optimization parameters have on the cost calculation, which keeps the optimized parameters small.  This reduces the ``strength" of the regression model and can help eliminate over-fitting problems.  Equation \ref{eq:logistic_regression_cost_reg} shows the new logistic regression cost function with a regularization term applied.  The new gradient function can be derived with the regularization term, as shown in Equation \ref{eq:logistic_regression_gradient_reg}.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_order10_decision_boundary}
+	\decoRule
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 10th order model using 2 input parameters and a binary output class, and has an over-fitting problem.  This model has an accuracy of about 81\% when using the test data set.  Notice that the accuracy of the over-fitting model on the test data is lower than the lower order models shown in Figure \ref{fig:logistic_regression_order2_decision_boundary}.}
+	\label{fig:logistic_regression_order10_decision_boundary}
+\end{figure}
+
+\begin{align}
+	J(\theta) &= \frac{1}{m} \sum_{i=1}^{m}{\left[y_i \ln({h_{\theta}(x_i))} + (1-y_i) \ln{(1-h_{\theta}}) \right]} + \frac{\lambda}{2m} \sum_{j=1}^{n}{\theta_j^2} \label{eq:logistic_regression_cost_reg} \\	
+	\frac{\partial J(\theta)}{\partial \theta_j} &= \frac{1}{m} \sum_{i=1}^{m}{\left(h_{\theta}(x_i) - y(i)\right) x_{j,i}} + \frac{\lambda}{m} \theta_j\label{eq:logistic_regression_gradient_reg}
+\end{align}
+
+Adding regularization to the 10th order model shown in Figure \ref{fig:logistic_regression_order10_decision_boundary}, can result in a much better fitting model for the data.  Figure \ref{fig:logistic_regression_order10_decision_boundary_reg} shows the result of a regularization term of $\lambda=3$.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_order10_decision_boundary_reg}
+	\decoRule
+	\caption{This figure shows the decision boundary from the logistic regression model using a regularization term of $\lambda=3$.  This is a 10th order model using 2 input parameters and a binary output class.  This model has an accuracy of about 86\% when using the test data set, which is higher than the 10th order model with no regularization (Figure \ref{fig:logistic_regression_order10_decision_boundary}).}
+	\label{fig:logistic_regression_order10_decision_boundary_reg}
+\end{figure}
+
+The logistic regression function outputs the probability that the data set falls into a certain class.  This means that for most decision boundary plots, the data set is classified as Class A if the probability is greater than 50\% and the data is classified as Class B if the probability is less than 50\%.  The decision boundary can also include the probability to produce a smooth gradient plot as in Figure \ref{fig:logistic_regression_decision_boundary_smooth}.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_decision_boundary_smooth}
+	\decoRule
+	\caption{This figure shows the probability of the model classifying certain data sets as Class A and Class B.  This model was trained with an order of 3 and a regularization parameter of $\lambda=1$.  The background color of the plot represents the probability of the data set being classified as Class A, with solid green being about 99\% certainty and solid red being about 1\% certainty.}
+	\label{fig:logistic_regression_decision_boundary_smooth}
+\end{figure}
+
+
+
+\subsection{Using a complete feature set}
+The logistic regression models in the previous section use only 2 features from the entire data set (the features shown in Figure \ref{fig:max_balanced_freq_mag}).  This is convenient because it is easy to conceptualize and visualize.  The decision boundaries for models with 2 features can be analyzed using plots like Figure \ref{fig:logistic_regression_order10_decision_boundary_reg}.  A better version of the model would use all of the frequency spectrum data as inputs to the model.  This means that instead of using the peak amplitude and corresponding maximum frequency as model inputs, the entire FFT could be used.
+
+Using the whole frequency spectrum means the model will have 256 features (one for the magnitude of each frequency component).  This is a lot of features to use for the KNN algorithm and will be far too slow when more training data is acquired.  The benefit of regression-based models is that the computational cost to predict the class of new data remains the same regardless of how many training examples are used to optimize the model parameters.  This means that using more data will just improve the model without slowing down the real-time calculations (it will, however, make the training time much slower).
+
+Figure \ref{fig:logistic_regression_all_features_cost} shows a plot of the cost function value during the training process.  This is a common way of visually ensuring the model has converged to a local minimum. This produces an accuracy score of 95\% on the training data which is much higher than the scores from the 2-feature models in the previous section.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_all_features_cost}
+	\decoRule
+	\caption{This figure shows the cost function value during the training process with a regularization term of $\lambda=1$.  In this model, all 256 features are used as inputs.}
+	\label{fig:logistic_regression_all_features_cost}
+\end{figure}
+
+To better understand the results of the training process, the model parameters are plotted in Figure \ref{fig:logistic_regression_model_parameters}.  This shows each of the parameters in $\vec{\theta}$ and the corresponding frequencies they are correlated to.  To calculate the probability of the turbine being in a specific class, these parameters are multiplied with the FFT results and passed through the sigmoid function, as shown in Equation \ref{eq:logistic_regression_hypothesis}.
+
+From inspecting Figure \ref{fig:logistic_regression_model_parameters}, it appears as though the frequency around 2.5 Hz is weighted the most, with some of the surrounding frequencies having small negative weights.  The logistic regression model essentially ``learns" that it should inspect the rotor frequency to classify the state of the turbine.    It is also interesting that frequencies +/- 0.5 Hz from the strongest component in $\\vec{\theta}$ have the biggest negative weights.  From a visual inspection of the training data in one of the previous decision boundary plots (like Figure \ref{fig:logistic_regression_order10_decision_boundary_reg}), it appears as though data is likely to belong to Class A if the frequency is fairly constant around 2.5 Hz.  If the frequency diverges from this value, the training data generally falls into Class B.  This is how the logistic regression model is analyzing the data and predicting the turbine state.
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.8]{logistic_regression_model_parameters}
+	\decoRule
+	\caption{This figure shows the optimized model parameters for the logistic regression model using all the input features.  Each parameter corresponds to a specific frequency, which means that this function gets multiplied by the FFT of each data set and used to calculate the probability that the turbine is either balanced on not balanced.}
+	\label{fig:logistic_regression_model_parameters}
+\end{figure}
+
+
 %
 %The filtered data produces a much more accurate detection model because much of the time-dependent noise is suppressed.  It is difficult to draw conclusive results from these test results, since there are only 55 sets of balanced and imbalanced data.  80 percent of this data is used to train the detection algorithm, while the remaining 20 percent is used to perform the verification testing shown in the confusion matrices and accuracy results.
 %
