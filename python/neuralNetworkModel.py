@@ -57,7 +57,8 @@ class neuralNetworkModel:
 
 	def shuffle_data(self, X, Y):
 		''' 
-		Shuffle the data to randomize it by rows.
+		Shuffle the data to randomize it by rows.  The experimental data
+		needs to be randomized before it can be split up and processed.
 
 		Args:
 			X: The array of input data
@@ -136,7 +137,19 @@ class neuralNetworkModel:
 
 
 	def calculate_all_layers(self, X, Y):
-		''' Calculate all of the layer outputs '''
+		'''
+		Calculate all of the layer outputs.  This function returns all of the 
+		intermediate variables used during the output calculation of the neural network.
+		
+		Args:
+			X: The input data of size [m,n] where m is the number of training
+				examples and n is the number of parameters
+			Y: The output data [m,1] where m is the number of training examples
+
+		Returns:
+			A structure containing the intermediate variables from the neural
+			network calculation.
+		'''
 
 		# Reshape the weight matrices into the proper dimensions
 		Theta1 = np.reshape(self.nn_params[0:self.hidden_layer_size*(self.input_layer_size+1)], 
@@ -179,20 +192,53 @@ class neuralNetworkModel:
 
 
 	def sigmoidGradient(self, x):
-		''' Calculate the sigmoid Gradient '''
+		''' 
+		Calculate the sigmoid gradient. This is the derivative of the
+		sigmoid function.
+
+		Args:
+			x: The input variable or vector or matrix
+
+		Returns:
+			The gradient of the sigmoid function at x
+		'''
 
 		return self.sigmoid(x) * (1-self.sigmoid(x))
 
 
 	def sigmoid(self, x):
-		''' Calculate the sigmoid function '''
+		'''
+		Calculate the sigmoid function.
+
+		Args:
+			x: The input variable or vector or matrix
+
+		Returns:
+			The value of the sigmoid function.
+		'''
 
 		return 1 / (1 + np.exp(-x))
 
 
 	def nnCostFunction(self, nn_params, input_layer_size, hidden_layer_size, num_labels,
 		X, y, lambda0):
-		''' NN cost function '''
+		''' 
+		The cost function of the neural network.  This only outputs the value of the cost
+		function and not the gradient.
+
+		Args:
+			nn_params: the Theta1 and Theta2 variables for a 3-layer neural network flattened
+				into a single vector
+			input_layer_size: The number of features in the input layer (not including the bias unit)
+			hidden_layer_size: The number of units in the hidden layer (not including the bias unit)
+			num_labels: The number of classes (code needs to be modified to accomodate more than 1 class)
+			X: The input data of size [m,n] where m is the number of training examples and n=input_layer_size
+			y: The output data of size [m,1]
+			lambda0: the regularization parameter
+
+		Returns:
+			The value of the cost function
+		'''
 
 		# Reshape the weight matrices into the proper dimensions
 		Theta1 = np.reshape(nn_params[0:hidden_layer_size*(input_layer_size+1)], (hidden_layer_size, input_layer_size+1))
@@ -231,11 +277,30 @@ class neuralNetworkModel:
 
 	def nnCostFunctionGradient(self, nn_params, input_layer_size, hidden_layer_size, 
 		num_labels, X, y, lambda0):
-		''' Calculate the gradient of the cost function analytically '''
+		'''
+		Calculate the gradient of the cost function analytically.  This is much faster than
+		using the finite difference method to numerically calculate the gradient.
+
+		Args:
+			nn_params: the Theta1 and Theta2 variables for a 3-layer neural network flattened
+				into a single vector
+			input_layer_size: The number of features in the input layer (not including the bias unit)
+			hidden_layer_size: The number of units in the hidden layer (not including the bias unit)
+			num_labels: The number of classes (code needs to be modified to accomodate more than 1 class)
+			X: The input data of size [m,n] where m is the number of training examples and n=input_layer_size
+			y: The output data of size [m,1]
+			lambda0: the regularization parameter
+
+		Returns:
+			The value of the cost function gradient, which is a flattened matrix equal to the size of nn_params
+
+		'''
 
 		# Reshape the weight matrices into the proper dimensions
-		Theta1 = np.reshape(nn_params[0:hidden_layer_size*(input_layer_size+1)], (hidden_layer_size, input_layer_size+1))
-		Theta2 = np.reshape(nn_params[hidden_layer_size*(input_layer_size+1):], (num_labels, hidden_layer_size+1))
+		Theta1 = np.reshape(nn_params[0:hidden_layer_size*(input_layer_size+1)],
+			(hidden_layer_size, input_layer_size+1))
+		Theta2 = np.reshape(nn_params[hidden_layer_size*(input_layer_size+1):],
+			(num_labels, hidden_layer_size+1))
 
 		# Calculate the number of training examples
 		m = X.shape[0]
@@ -313,7 +378,17 @@ class neuralNetworkModel:
 
 
 	def gradientChecking(self, lambda0=0):
-		''' Perform gradient checking '''
+		'''
+		Perform gradient checking.  This is a way of verifying the analytic gradient
+		is accurate and implemented correctly.  This method should not be used after
+		the gradient is verified to be correct.
+
+		Args:
+			lambda0: [0] The regularization parameter
+
+		Returns:
+			A flag determining if the gradient is calculated correctly
+		'''
 
 		# Define a small neural network to perform the gradient checking on
 		input_layer_size = 3 # number of units in the input layer
