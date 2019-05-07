@@ -226,7 +226,7 @@ class LifeLine_file:
 		self.amplitudes = self.amplitudes[num_samples:]
 
 
-	def addto_nn_variables(self, X, Y):
+	def add_all_variables(self, X, Y):
 		'''
 		Create the neural network variables from the data.
 		'''
