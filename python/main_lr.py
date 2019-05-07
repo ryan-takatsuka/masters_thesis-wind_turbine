@@ -5,6 +5,8 @@ import simulate_LL_data
 import logisticRegressionModel
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas
+
 
 # The experimental data filename
 filename = 'experimental_data//WDFT_2018-04-01_160352.txt'
@@ -12,62 +14,52 @@ filename = 'experimental_data//WDFT_2018-04-01_160352.txt'
 # Read experimental data for an imbalanced rotor in a LifeLine file
 exp_data = LifeLine_file.LifeLine_file(filename, low_cut=42,
 	is_balanced=True, idx_range=[18, 73])
-# exp_data.filter(ftype='SG', order=2, framelen=15, wn=0.1)
-# exp_data.filter(ftype='Butter_IIR', order=2, framelen=7, wn=0.2)
-# exp_data.filter(ftype='Window_FIR', order=8, framelen=7, wn=0.2)
-# exp_data.plot()
-
 # Add experimental data to the training/testing dataset
 dataset = []
 exp_data.addto_dataset(dataset)
 
-# Create simulated data for a rotor imbalance (because I don't have this data)
-# sim_data = simulate_LL_data.simulated_data(exp_data.time)
-# sim_data.simulate_imbalance()
-
 # Read experimental data for balanced rotor in a LifeLine file
 exp_data2 = LifeLine_file.LifeLine_file(filename, low_cut=42,
 	is_balanced=False, idx_range=[185, 240])
-# exp_data2.filter(ftype='SG', order=2, framelen=15, wn=0.1)
-# exp_data2.filter(ftype='Butter_IIR', order=2, framelen=7, wn=0.2)
-# exp_data2.filter(ftype='Window_FIR', order=8, framelen=7, wn=0.2)
-# exp_data2.plot()
-
 # Add simulated data to the training/testing dataset
 exp_data2.addto_dataset(dataset)
 
+# The names of the dataset variables
+names = ['Frequency', 'Amplitude', 'status']
+
+# Create a pandas dataset
+dataset = pandas.DataFrame(dataset, columns=names)
+
+# Set the X and Y parameters for the dataset
+X = dataset.values[:,0:2]
+Y = dataset.values[:,2]
+
+# Add all frequency data to experimental data
+# X = []
+# Y = []
+# exp_data.add_all_variables(X, Y)
+# exp_data2.add_all_variables(X, Y)
+
+
 # Create the detection model for determining an imbalance in the rotor
-my_algorithm = logisticRegressionModel.logisticRegressionModel(dataset, lambda0=0)
+LR_model = logisticRegressionModel.logisticRegressionModel(X, Y, lambda0=1, order=3)
 
+m = LR_model.X.shape[0]
+n = LR_model.X.shape[1]
 
-m = my_algorithm.X.shape[0]
-n = my_algorithm.X.shape[1]
-
-X = my_algorithm.X
+X = LR_model.X
 theta = np.zeros((n+1, 1))
-lambda0 = 1
-Y = my_algorithm.Y
-
-print(my_algorithm.costFunction(theta, X, Y, lambda0))
-print(my_algorithm.costFunctionGradient(theta, X, Y, lambda0))
+lambda0 = 0
+Y = LR_model.Y
 
 
-result = my_algorithm.train_model()
-pred, accuracy = my_algorithm.predict(my_algorithm.X_test, my_algorithm.Y_test)
+result = LR_model.train_model()
+pred, accuracy = LR_model.predict(LR_model.X_test, LR_model.Y_test)
 print('The model accuracy: ', accuracy, '%')
 
 # Plot some results
-my_algorithm.plot_iteration() # plot the cost function during the optimization process
-my_algorithm.plot_decision_boundary(my_algorithm.X, my_algorithm.Y) # db
+# LR_model.plot_iteration() # plot the cost function during the optimization process
+LR_model.plot_decision_boundary(LR_model.X, LR_model.Y, num_points=200, smooth=True) # db
+# LR_model.plot_theta(exp_data.frequencies)
 plt.show()
 
-
-# # Train and validate the model
-# model = my_algorithm.train()
-# predictions = my_algorithm.test()
-
-# # Plot model
-# my_algorithm.plot_model()
-
-
-# plt.show()

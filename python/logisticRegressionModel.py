@@ -1,11 +1,12 @@
 # Load libraries
-import pandas
 import matplotlib.pyplot as plt
 import numpy as np
 from sklearn import preprocessing
 import scipy.optimize
 from matplotlib.colors import ListedColormap
 import matplotlib.patches as mpatches
+from sklearn.preprocessing import PolynomialFeatures
+import my_colors
 
 
 
@@ -16,27 +17,24 @@ class logisticRegressionModel:
 	Building the model from scratch allows for many possible customizations.
 	'''
 
-	def __init__ (self, dataset, lambda0=1):
+	def __init__ (self, X, Y, lambda0=1, order=1):
 		'''
 		Initialize the model.
 
 		Args:
 			dataset (list): The experimental training/testing dataset that is used to build
 				the model
+			lambda0: [1] The regularization parameter
+			order: The polynomial order to fit
 		'''
 
 		# Set the regularization parameter
 		self.lambda0 = lambda0
 
-		# The names of the dataset variables
-		names = ['Frequency', 'Amplitude', 'status']
-
-		# Create a pandas dataset
-		dataset = pandas.DataFrame(dataset, columns=names)
-
-		# Set the X and Y parameters for the dataset
-		X = dataset.values[:,0:2]
-		Y = dataset.values[:,2]
+		# Define the polynomial used to fit the data and modify the 
+		# input data to accomodate this model
+		self.polynomial_features= PolynomialFeatures(degree=order)
+		X = self.polynomial_features.fit_transform(X)[:,1:]
 
 		# Change output to binary values
 		Y = preprocessing.LabelEncoder().fit_transform(Y)
@@ -53,9 +51,6 @@ class logisticRegressionModel:
 		self.Y_test = self.Y[0:train_index]
 		self.X_train = self.X[train_index:,:]
 		self.Y_train = self.Y[train_index:]
-
-		# Intialize model
-		print(self.Y_test)
 
 
 	def shuffle_data(self, X, Y):
@@ -139,7 +134,7 @@ class logisticRegressionModel:
 		return 1 / (1 + np.exp(-x))
 
 
-	def train_model(self):
+	def train_model(self, maxiter=100, tol=1e-8):
 		''' Train the logistic regression model '''
 
 		# Initialize the parameters to 0
@@ -158,10 +153,13 @@ class logisticRegressionModel:
 			print(iter_num[-1],',', J) # print intermediate results
 			self.J_iters.append(J) # add intermediate cost value to a list
 
+		# Specify options for the minimization function
+		options = {"maxiter": maxiter}
+
 		# Optimize the parameters
 		result = scipy.optimize.minimize(self.costFunction, theta_init, 
 			args=costFun_args, jac=self.costFunctionGradient, 
-			callback=callbackFun)
+			callback=callbackFun, options=options, tol=tol)
 
 		# Set the output parameters
 		self.theta = np.matrix(result.x).T
@@ -218,14 +216,23 @@ class logisticRegressionModel:
 		plt.ylabel('Cost function value')
 
 
-	def plot_decision_boundary(self, X, Y):
+	def plot_decision_boundary(self, X, Y, num_points=1000, smooth=False):
 		'''
 		Plot the decision boundary.  This only works if there are 2 units
 		in the hidden layer.
 		'''
 
 		# Create color maps used for plotting classifications
-		cmap_light = ListedColormap(['#FFAAAA', '#AAFFAA'])
+		discrete_colors = ['#FFAAAA', '#AAFFAA']
+		smooth_colors = my_colors.linear_gradient('#FFAAAA', finish_hex='#AAFFAA', n=100)['hex']
+
+		# Create the colormap from the list
+		if smooth: # create a smooth colormap proportional to the probability
+			cmap_light = ListedColormap(smooth_colors)
+		else: # create a discrete colormap line
+			cmap_light = ListedColormap(discrete_colors)
+
+		# Map the data points with a darker color
 		cmap_bold = ListedColormap(['#FF0000', '#00FF00'])
 
 		# Plot the decision boundary. For that, we will assign a color to each
@@ -240,14 +247,22 @@ class logisticRegressionModel:
 		y_max = y_max + (x_max - x_min) * range_increase_perc # expand range
 
 		# Create the mesh grid used to create the decision boundary plot
-		n = 200
+		n = num_points
 		xx, yy = np.meshgrid(np.linspace(x_min, x_max, n),
 							 np.linspace(y_min, y_max, n))
 
 		# Calculate the last layer assuming a known layer 2 activation for each unit.
 		# These values are the decision boundary values for the plot
 		X0 = np.vstack((xx.ravel(), yy.ravel())).T
-		Z0 = np.array(np.round(self.calculate_hypothesis(X0)))
+
+		# Define the polynomial used to fit the data and modify the 
+		# input data to accomodate this model (don't use the bias column
+		# because we will make our own)
+		X_order = self.polynomial_features.fit_transform(X0)[:,1:]
+
+		# Calculate output of the model with the specified order
+		# Z0 = np.array(np.round(self.calculate_hypothesis(X_order)))
+		Z0 = np.array(self.calculate_hypothesis(X_order))
 
 		# Put the decision boundary in a color plot
 		Z0 = Z0.reshape(xx.shape)
@@ -257,19 +272,26 @@ class logisticRegressionModel:
 		Y = [int(np_float) for np_float in Y]
 		Y = np.array(Y)
 
-		print(xx.shape)
-		print(Z0)
-
 		# Plot all of the experimental data
 		plt.scatter(X[:, 0], X[:, 1], c=Y, cmap=cmap_bold,
 					edgecolor='k', s=20)
 		plt.xlim(xx.min(), xx.max())
 		plt.ylim(yy.min(), yy.max())
-		plt.title("Neural Network Classification")
-		plt.xlabel('Hidden layer unit #1 activation')
-		plt.ylabel('Hidden layer unit #2 activation')
+		plt.title("Logistic Regression Decision Boundary")
+		plt.xlabel('Frequency [Hz]')
+		plt.ylabel('Acceleration at peak frequency component [m/s/s]')
 		plt.legend(('Good', 'Bad'))
 
-		balanced = mpatches.Patch(color='#00FF00', label='Good')
-		not_balanced = mpatches.Patch(color='#FF0000', label='Bad')
+		balanced = mpatches.Patch(color='#00FF00', label='Class A')
+		not_balanced = mpatches.Patch(color='#FF0000', label='Class B')
 		plt.legend(handles=[balanced, not_balanced])
+
+
+	def plot_theta(self, freqs):
+		''' plot the parameters of the model, theta '''		
+
+		plt.figure()
+		plt.plot(freqs, self.theta[1:])
+		plt.xlabel('Frequency [Hz]')
+		plt.ylabel('Parameter Value')
+		plt.title('Optimized Model Parameters')
