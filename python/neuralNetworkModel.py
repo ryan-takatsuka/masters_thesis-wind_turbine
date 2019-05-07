@@ -481,7 +481,7 @@ class neuralNetworkModel:
 		plt.ylabel('Cost function value')
 
 
-	def plot_decision_boundary(self, X, Y):
+	def plot_decision_boundary(self, X, Y, num_points=200):
 		'''
 		Plot the decision boundary.  This only works if there are 2 units
 		in the hidden layer.

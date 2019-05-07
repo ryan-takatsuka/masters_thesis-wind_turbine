@@ -20,14 +20,14 @@ exp_data = LifeLine_file.LifeLine_file(filename, low_cut=42,
 	is_balanced=True, idx_range=[18, 73])
 
 # Add experimental data to the training/testing dataset
-exp_data.addto_nn_variables(X, Y)
+exp_data.add_all_variables(X, Y)
 
 # Read experimental data for balanced rotor in a LifeLine file
 exp_data2 = LifeLine_file.LifeLine_file(filename, low_cut=42,
 	is_balanced=False, idx_range=[185, 240])
 
 # Add simulated data to the training/testing dataset
-exp_data2.addto_nn_variables(X, Y)
+exp_data2.add_all_variables(X, Y)
 
 # Create the neural network model
 hidden_layer_size = 2
@@ -43,6 +43,12 @@ print('The model accuracy: ', accuracy, '%')
 
 # Plot some results
 nnModel.plot_iteration() # plot the cost function during the optimization process
-nnModel.plot_decision_boundary(nnModel.X_test, nnModel.Y_test) # db
-plt.show()
+nnModel.plot_decision_boundary(nnModel.X_test, nnModel.Y_test, num_points=200) # db
+# plt.show()
 
+print(nnModel.nn_result['Theta1'][0])
+
+plt.figure()
+plt.plot(exp_data.frequencies, nnModel.nn_result['Theta1'][0,1:])
+plt.plot(exp_data.frequencies, nnModel.nn_result['Theta1'][1,1:])
+plt.show()
