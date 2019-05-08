@@ -36,6 +36,9 @@ class logisticRegressionModel:
 		self.polynomial_features= PolynomialFeatures(degree=order)
 		X = self.polynomial_features.fit_transform(X)[:,1:]
 
+		# Normalize the data
+		# X = (X-np.mean(X, axis=0)) / np.std(X, axis=0)
+
 		# Change output to binary values
 		Y = preprocessing.LabelEncoder().fit_transform(Y)
 
