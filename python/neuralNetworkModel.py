@@ -35,6 +35,9 @@ class neuralNetworkModel:
 			lambda0: [1] The regularization parameter
 		'''
 
+		# Normalize the data
+		X = (X-np.mean(X, axis=0)) / np.std(X, axis=0)
+
 		# Randomize the data
 		self.X, self.Y = self.shuffle_data(np.array(X), np.array(Y))
 
