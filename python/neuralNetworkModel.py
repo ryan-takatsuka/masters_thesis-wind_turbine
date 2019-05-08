@@ -103,6 +103,8 @@ class neuralNetworkModel:
 		initial_nn_params = np.append(initial_Theta1.flatten(), 
 			initial_Theta2.flatten())
 
+		# print(initial_Theta2)
+
 		# Verify that the gradient calculated with the cost function is correct
 		# gradientChecking(lambda0)
 
