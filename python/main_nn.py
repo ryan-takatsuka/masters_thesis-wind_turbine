@@ -32,7 +32,7 @@ exp_data2.add_all_variables(X, Y)
 # Create the neural network model
 hidden_layer_size = 20
 nnModel = neuralNetworkModel.neuralNetworkModel(X, Y, 
-	hidden_layer_size, lambda0=1)
+	hidden_layer_size, lambda0=0.001)
 
 # Train the neural network model
 nnModel.train_model()
@@ -49,9 +49,6 @@ nnModel.plot_iteration() # plot the cost function during the optimization proces
 # print(nnModel.nn_result['Theta1'][0])
 
 plt.figure()
-print(nnModel.nn_result['Theta1'].shape)
-for i in range(20):
-	plt.plot(nnModel.nn_result['Theta1'][i,1:])
+for i in range(hidden_layer_size):
+	plt.plot(exp_data.frequencies, nnModel.nn_result['Theta1'][i,1:])
 plt.show()
-
-print(nnModel.nn_result['Theta2'])
