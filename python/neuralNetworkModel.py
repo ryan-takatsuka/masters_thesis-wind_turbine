@@ -504,6 +504,8 @@ class neuralNetworkModel:
 
 
 		a2 = nn_result["a2"][:,1:3]
+		a2 = nn_result["z2"]
+
 
 		# Plot the decision boundary. For that, we will assign a color to each
 		# point in the mesh [x_min, x_max]x[y_min, y_max].  Set up these range
@@ -517,7 +519,7 @@ class neuralNetworkModel:
 		y_max = y_max + (x_max - x_min) * range_increase_perc # expand range
 
 		# Create the mesh grid used to create the decision boundary plot
-		n = 1000
+		n = num_points
 		xx, yy = np.meshgrid(np.linspace(x_min, x_max, n),
 							 np.linspace(y_min, y_max, n))
 
@@ -545,6 +547,6 @@ class neuralNetworkModel:
 		plt.ylabel('Hidden layer unit #2 activation')
 		plt.legend(('Good', 'Bad'))
 
-		balanced = mpatches.Patch(color='#00FF00', label='Good')
-		not_balanced = mpatches.Patch(color='#FF0000', label='Bad')
+		balanced = mpatches.Patch(color='#00FF00', label='Class A')
+		not_balanced = mpatches.Patch(color='#FF0000', label='Class B')
 		plt.legend(handles=[balanced, not_balanced])

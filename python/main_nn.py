@@ -30,9 +30,9 @@ exp_data2 = LifeLine_file.LifeLine_file(filename, low_cut=0,
 exp_data2.add_all_variables(X, Y)
 
 # Create the neural network model
-hidden_layer_size = 20
+hidden_layer_size = 2
 nnModel = neuralNetworkModel.neuralNetworkModel(X, Y, 
-	hidden_layer_size, lambda0=0.001)
+	hidden_layer_size, lambda0=0)
 
 # Train the neural network model
 nnModel.train_model()
@@ -43,7 +43,7 @@ print('The model accuracy: ', accuracy, '%')
 
 # Plot some results
 nnModel.plot_iteration() # plot the cost function during the optimization process
-# nnModel.plot_decision_boundary(nnModel.X_test, nnModel.Y_test, num_points=200) # db
+nnModel.plot_decision_boundary(nnModel.X, nnModel.Y, num_points=1000) # db
 # plt.show()
 
 # print(nnModel.nn_result['Theta1'][0])
