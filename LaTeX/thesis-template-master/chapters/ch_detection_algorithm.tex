@@ -1,7 +1,4 @@
 \chapter{Imbalance Detection Algorithm} % Chapter title
-
-\todo{describe LifeLine system.}
-
 \label{ch_detection_algorithm}
 
 %----------------------------------------------------------------------------------------
@@ -18,7 +15,7 @@ Machine learning algorithms also fall into the ``regression" or ``classification
 Knowing that the ML algorithm must be a classification, supervised model, the specific algorithm choice can be narrowed down.  Some of the common algorithms are logistic regression (this can be used as a classification algorithm even though it is called ``regression"), k-nearest neighbor, and neural networks.  This paper will analyze each of these models and apply them to the experimental turbine data.
 
 \section{The training data}
-Typically, it is common for machine learning algorithms to split the data into test and training sub groups.  This allows the accuracy of the models to be trained and evaluated on different data sets.  The input data for the turbine is a 256-point frequency spectrum of the acceleration data at the top of the tower.  Figure \ref{fig:LL_spectrogram} shows a spectrogram of the measured acceleration data.  A spectrogram is a way to visualize frequency data over time in a 2-dimensional figure, where the magnitudes of each frequency component are represented by a different color.  The spectrogram shows that there is a strong frequency component at about 2.4 Hz (the rotor frequency) that is constant throughout most of the operation.
+Typically, it is common for machine learning algorithms to split the data into test and training sub groups.  This allows the accuracy of the models to be trained and evaluated on different data sets.  The input data for the turbine is a 256-point frequency spectrum of the acceleration data at the top of the tower.  This data is obtained using the LifeLine system, which includes an accelerometer and a STM32 microprocessor.  This device is placed at the top of the tower and powered directly from the turbine.  Ideally, this device would significantly drop the clock rate of the processor or swap out the processor for an extremely low-power one.  This would allow the device to be wireless and have a reasonable operation time for each battery charge.  Figure \ref{fig:LL_spectrogram} shows a spectrogram of the measured acceleration data from the LifeLine device.  A spectrogram is a way to visualize frequency data over time in a 2-dimensional figure, where the magnitudes of each frequency component are represented by a different color.  The spectrogram shows that there is a strong frequency component at about 2.4 Hz (the rotor frequency) that is constant throughout most of the operation.
 
 \begin{figure}
 	\centering
@@ -130,7 +127,7 @@ Logistic regression (LR) is a modified version of linear regression that is adap
 Linear regression is the process of minimizing the least squares cost of a data set with a linear function.  This is a commonly utilized method in curve fitting, but can also be applied to very high order systems.  Mathematically, this means minimizing the cost function shown in Equation \ref{eq:linear_regression_cost_fun}.  The hypothesis is the linear curve fit shown in Equation \ref{eq:linear_regression_hypothesis}.
 \begin{align}
 	J\left(\vec{\theta}\right) &= \frac{1}{2m} \sum_{i=1}^{m}{\left(h_{\theta}(x_i) - y_i\right)^2} \label{eq:linear_regression_cost_fun} \\
-	h_{\theta}(x) &= \mat{x} \cdot \vec{\theta}^T\label{eq:linear_regression_hypothesis} \\
+	h_{\theta}(x) &= \mat{x} \cdot \vec{\theta}^T \label{eq:linear_regression_hypothesis} \\
 	\vec{\theta} &= [\theta_1, \theta_2, \theta_3, \hdots, \theta_n]
 \end{align}
 
@@ -272,166 +269,91 @@ From inspecting Figure \ref{fig:logistic_regression_model_parameters}, it appear
 	\label{fig:logistic_regression_model_parameters}
 \end{figure}
 
+\section{Neural Network}
 
-%
-%The filtered data produces a much more accurate detection model because much of the time-dependent noise is suppressed.  It is difficult to draw conclusive results from these test results, since there are only 55 sets of balanced and imbalanced data.  80 percent of this data is used to train the detection algorithm, while the remaining 20 percent is used to perform the verification testing shown in the confusion matrices and accuracy results.
-%
-%Both the amplitude and frequency values are important in detecting an imbalance in the turbine rotor.  An imbalance will cause overall higher acceleration amplitudes, but will also cause a larger variation in rotor speeds.  As shown in Figure  \ref{fig:classification_boundaries_filter}, the imbalanced data has large variations in both the maximum amplitude and frequency of the LifeLine DFT data.  When there is an imbalance in the rotor, the closed-loop transfer function of the changes, causing error in the tuned rotor speed controller parameters.  This causes some instability in the controller that is identified by the DFT results of the LifeLine module.
-%
-%Additionally, this algorithm can also be made more robust by looking for 10 or more positive imbalance detections in a row before flagging an alert.  This will remove any false positives that could shut the turbine down unintentionally.
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{classification_boundaries_filter}
-%	\decoRule
-%	\caption{The classification boundaries for test and training data that \textit{is} filtered.}
-%	\label{fig:classification_boundaries_filter}
-%\end{figure}
-%
-%
-%
-%%----------------------------------------------------------------------------------------
-%%	SECTION 2
-%%----------------------------------------------------------------------------------------
-%\section{Detecting an imbalance}
-%
-%\todo{More explanation about the types of machine learning algorithms.  Explain the strengths and weaknesses of each method and include some background on machine learning.  Start with an explanation about the comparison between machine learning and linear regression.}
-%
-%\subsection{Selecting a classification algorithm}
-%The crude and simple way to determine if there is an imbalance is to use a threshold criterion for the magnitude of the largest frequency component.  This method does not utilize the frequency values that correspond to each magnitude.  Since the rotor RPM is a range (not a constant value), it is likely that the magnitude will be slightly higher if the turbine is running faster and slightly lower if the turbine is running slower.  Additionally, the threshold method does not adapt the algorithm to patterns and new information gained from more data.
-%
-%This is a standard "classification" problem, where the algorithm needs to classify the state of the turbine as \textit{balanced} or \textit{not balanced}.  With the modern availability of computational power, classification algorithms tend to fall under the "machine learning" category.  These algorithms consist of a model that adapts to training data in order to minimize the error.  A few of the common models include Logistic Regression (LR), Linear Discriminant Analysis (LDA), K-Neighbors Classifier (KNC), Decision Tree Classifier (DNC), Gaussian Naive Bayes (GNB), and Support Vector Classification (SVC).
-%
-%The Logistic Regression model is commonly used to estimate discrete values (0/1 or false/true) and uses the logistic curve equation as the probability model.  The Linear Discriminant Analysis model address many of the shortcomings of the Logistic Regression model, such as multi-class classification and a higher stability.  Because the turbine classification problem only has 2 classes, this model is not likely to be the most optimal.
-%
-%The K-Neighbors Classifier model is one of the simplest models, but can be the most accurate and powerful when dealing with fairly small datasets.  This model essentially "memorizes" the training data and plots the points in $n$-dimensional space.  The classification of the new point is calculated based on the distances between the new point and the training points.  This model is likely to be an accurate algorithm for the turbine problem.
-%
-%Decision Tree Classification relies on the ability to split the data set into binary categories and subcategories, where the algorithm can follow yes/no decisions to lead to the correct class.
-%
-%The Gaussian Naive Bayes model is a statistics based model that modifies a prior belief bell curve based on the training data.  This is a statistical method of classifying data where the data set statistics are constantly updated with new data (as opposed to static models, such as mean, median, and standard deviation classification).
-%
-%The Support Vector Classification model creates a $n$-dimensional space where the training data points are divided by a clear gap that is as wide as possible.
-%
-%To compare the listed classification models against each other, the accuracy of each model is plotted using the same training and test data.  Figure \ref{fig:algorithm_comparison} shows that the K-Neighbors Classification algorithm has one of the highest mean accuracy ratings with the smallest variation is accuracy scores.  This is also the simplest to design and implement, which makes it an ideal choice for the imbalance detection algorithm that may need to run on a microprocessor attached to the turbine tower.
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{algorithm_comparison}
-%	\decoRule
-%	\caption{A statistical comparison of different classification algorithms.  The algorithms compared are: Logistic Regression (LR), Linear Discriminant Analysis (LDA), K-Neighbors Classifier (KNC), Decision Tree Classifier (DNC), Gaussian Naive Bayes (GNB), and Support Vector Classification (SVC). \todo{Add axis label}}
-%	\label{fig:algorithm_comparison}
-%\end{figure}
-%
-%\subsection{Applying the K-Neighbors Classification Algorithm}
-%\subsubsection{About the algorithm}
-%The K-Neighbors Classifier (also known as the K-Nearest Neighbors Classifier or K-NN Classifier) is a type of "lazy learning" \cite{k_NN_algorithm}, which means it memorizes the training data and uses it to calculate the test data classification.  This results in a very short training time, but a longer calculation time curing the classification process.
-%
-%
-%The K-NN algorithm uses a "majority voting" method where the Euclidian distance between all the training data points and the test data is calculated.  This model assumes there is a relatively equal amount of balanced rotor experimental data and imbalanced experimental rotor data, which means the sample weighting can be uniform.  If there is a much higher frequency class (for example, much more balanced experimental data), this class will tend to dominate the calculations regardless of the actual class of the test data.
-%
-%The number of neighbors, $k$, is chosen to be 5 for this algorithm (using trial and error).  A larger value of $k$ will reduce the classification noise, but the boundaries are much more general and not as tuned to the training data.  A lower value of $k$ will match the model very closely to the training data, but may add noise into the classification process.
-%
-%The Euclidean distance is simply the distance between the data points.  This equation is shown below:
-%
-%\begin{equation}
-%	d = \sqrt{\sum{\left(x_{i,a}-x_{j,a}\right)^2}}
-%\end{equation}
-%
-%\subsubsection{Algorithm Results}
-%To apply the algorithm, the data is converted into short lists containing a maximum amplitude, a corresponding frequency value, and the known class. For this test, there are 55 experimental DFT results for a balanced rotor and 55 experimental DFT results for an imbalanced rotor.  Applying the algorithm on raw DFT data produces the classification boundary plot shown in Figure \ref{fig:classification_boundaries_no_filter}.  Using unfiltered data is slightly faster (there is no filter lag), but the accuracy is significantly reduces.  It is much more accurate to filter the data first, if the lag is an acceptable consequence.  The unfiltered data produces an accuracy of about 86 percent with a confusion matrix:
-%
-%\todo{Explain what a confusion matrix is.}
-%
-%\begin{equation}
-%C_{confusion} = 
-%\begin{bmatrix}
-%	13 & 0 \\
-%	3 & 6
-%\end{bmatrix}
-%\end{equation}
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{classification_boundaries_no_filter}
-%	\decoRule
-%	\caption{The classification boundaries for test and training data that is not filtered.}
-%	\label{fig:classification_boundaries_no_filter}
-%\end{figure}
-%
-%Figure \ref{fig:classification_boundaries_filter} shows the classification boundaries with data filtered using an IIR filter.  A clear trend can be seen in this data, with distinct class boundaries.  This produces an accuracy of 94 percent with a confusion matrix:
-%
-%\begin{equation}
-%C_{confusion,filtered} = 
-%\begin{bmatrix}
-%	6 & 1 \\
-%	0 & 11
-%\end{bmatrix}
-%\end{equation}
-%
-%The filtered data produces a much more accurate detection model because much of the time-dependent noise is suppressed.  It is difficult to draw conclusive results from these test results, since there are only 55 sets of balanced and imbalanced data.  80 percent of this data is used to train the detection algorithm, while the remaining 20 percent is used to perform the verification testing shown in the confusion matrices and accuracy results.
-%
-%Both the amplitude and frequency values are important in detecting an imbalance in the turbine rotor.  An imbalance will cause overall higher acceleration amplitudes, but will also cause a larger variation in rotor speeds.  As shown in Figure  \ref{fig:classification_boundaries_filter}, the imbalanced data has large variations in both the maximum amplitude and frequency of the LifeLine DFT data.  When there is an imbalance in the rotor, the closed-loop transfer function of the changes, causing error in the tuned rotor speed controller parameters.  This causes some instability in the controller that is identified by the DFT results of the LifeLine module.
-%
-%Additionally, this algorithm can also be made more robust by looking for 10 or more positive imbalance detections in a row before flagging an alert.  This will remove any false positives that could shut the turbine down unintentionally.
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{classification_boundaries_filter}
-%	\decoRule
-%	\caption{The classification boundaries for test and training data that \textit{is} filtered.}
-%	\label{fig:classification_boundaries_filter}
-%\end{figure}
-%
-%
-%%----------------------------------------------------------------------------------------
-%%	SECTION 3
-%%----------------------------------------------------------------------------------------
-%\section{Analyzing the Detection Algorithm}
-%\subsection{Using Different Parameters}
-%The main parameters to tune for the detection model are $k$ and the weighting.  In the KNN algorithm, the classification decision is based on the weighted vote from $k$ neighboring samples.  This means that a larger $k$ value will include more data in each decision, but may be lest accurate.  A smaller $k$ value will create tight classification boundaries, but could be prone to over-fitting.  Figure \ref{fig:classification_k_20_uniform} and Figure \ref{fig:classification_k_2_uniform} show the effect of changing the $k$ value on the classification boundaries.
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{classification_k_20_uniform}
-%	\decoRule
-%	\caption{The classification boundaries with $k=20$ and uniform weighting.}
-%	\label{fig:classification_k_20_uniform}
-%\end{figure}
-%
-%\begin{figure}
-%	\centering
-%	\includegraphics[scale=0.8]{classification_k_2_uniform}
-%	\decoRule
-%	\caption{The classification boundaries with $k=2$ and uniform weighting.}
-%	\label{fig:classification_k_2_uniform}
-%\end{figure}
-%
-%\subsection{Potential Problems}
-%One of the biggest problems with the KNN classification algorithm is the computational cost.  Because this is a "memory-based" model, the training data is essentially locked in memory and used to classify any new inputs.  By changing the model, the computational cost can be reduced; however, these are much more complicated to implement and not always as accurate.
-%
-%Additionally, the IIR filter has a fairly significant and nonlinear delay that increases near DC frequency components.  Faster filters can be used at the cost of accuracy because they will produce more noise or a more distorted signal.  For this application, it seems like accuracy is more important than speed, and the IIR filter parameters were designed around this idea.
-%
-%This detection algorithm is best developed with real experimental data, which means it requires actual data before it is of any use.  If a sufficient enough model is developed, the model can produce the test data to train the algorithm instead of collecting it in the field; however, this is likely to be less accurate.
-%
-%\subsection{Future Changes}
-%
-%\todo{Add a section about algorithm scalability and switching to a model-based machine learning algorithm (like a neural network) if many training sets are acquired.}
-%
-%One of the significant benefits with this algorithm is the flexibility.  It is very easy to add more data to improve the imbalance detection.  For example, in addition to peak frequency and magnitude, the wind speed and generator power can be included as parameters to improve the model.  With enough variables and experimental data, the model will become more accurate and robust (although it is difficult to visualize the classification space with orders higher than 2).
-%
-%In addition, the entire frequency spectrum can be used as an input to the algorithm (instead of just using the peak values), but the model becomes much more complex.  With a large amount of experimental data, the KNN model might need to be changed to a less computationally intensive model, such as a neural network.
-%
-%Just using a classification algorithm on raw data isn't always useful.  It is very important to properly choose a data processing methods, such as the IIR filter used in this paper.  Selecting the filter is just as important as choosing the model for this type of data.
-%
-%\todo{Add a section with conclusions, recommendations for future work, and methods for algorithm improvement.  Add code to a public repository.}
-%
-%
-%
-%
-%
+\subsection{About the algorithm}
+A neural network is an algorithm that resembles the neurons in the brain.  This is essentially a more complicated version of logistic regression, and is capable of training nonlinear models.  In some of the previous models (Such as the models in Figure \ref{fig:knn_decision_boundary_k_3} and Figure \ref{fig:logistic_regression_decision_boundary}), the DFT data was condensed down into 2 variables, which are the magnitude of the maximum frequency component and its corresponding frequency.  These variables were selected from intuition about the tower dynamics; however, there may be 2 different abstract features that better describe the system.  In order to find the 2 best features that describe the system, a neural network can be set up as shown in Figure \ref{fig:neural_network_diagram}.  This network has 3 layers, which include the input layer, hidden layer, and output layer.  The hidden layer contains 2 units, which are abstract features that can be fit to a linear model.  These 2 features should be a better indicator of the state of the turbine than the frequency and magnitude values previously used.  The (+1) units in the network represent bias units that are injected into the network to apply a constant bias to each set of parameters or features.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{neural_network_diagram}
+\decoRule
+\caption{This figure shows a neural network diagram for the turbine model.  The input layer contains the 256 DFT values, and the output layer contains the predicted probability that the turbine is balanced or not balanced.  The hidden layer represents some abstract features that can be used to predict the state of the turbine with a linear model.  This figure was created with Draw.io.}
+\label{fig:neural_network_diagram}
+\end{figure}
+
+For each layer, the value of each unit can be calculated by multiplying the weight matrix by the previous layer units and applying the sigmoid function, $g(z)$ (Equation \ref{eq:sigmoid_function}).  For example, the values in layer 2 ($\mat{a_2}$) can be calculated using Equation \ref{eq:nn_layer_2}.
+\begin{equation} \label{eq:nn_layer_2}
+	\mat{a_2} = g\left(\mat{X} \cdot \mat{\Theta_1}\right)
+\end{equation}
+
+In Equation \ref{eq:nn_layer_2}, $\mat{X}$ is the input data of size $[m,n]$, where $m$ is the number of training examples, and $n$ is the number of features (256 if all the DFT values are used).  $\mat{\Theta_1}$ is the matrix of weight values that is optimized during the training process.
+
+The hypothesis of the model in Figure \ref{fig:neural_network_diagram} is calculated using Equation \ref{eq:nn_hypothesis}.  This is the predicted probability that the turbine is balanced or unbalanced for all the training examples.
+\begin{equation} \label{eq:nn_hypothesis}
+	\vec{h}_{\theta} = g\left(\mat{a2} \cdot \mat{\Theta_2} \right)
+\end{equation}
+
+The squared difference cost function of the neural network diagram is shown in Equation \ref{eq:nn_cost_function}.
+\begin{equation} \label{eq:nn_cost_function}
+	J(\theta) = \frac{1}{m} \sum_{i=1}^{m}{\sum_{k=1}^{K}{\left[-y_{k,i} \ln{(h_{\theta}(x_i)} - (1-y_{k,i}) \ln{(1-h_{\theta}(x_i))} \right]}}
+\end{equation}
+
+To calculate the analytic gradient of the cost function back propagation is required.  Back propagation is an algorithm is derived from calculus to determine the gradient of a neural network.  As the name suggests, this method starts from the neural network output and calculates the error of each layer, which can be related to the gradient.  First, $\delta$ for each layer is calculated as shown in Equation \ref{eq:backprop_delta_3} and Equation \ref{eq:backprop_delta_2}.  $\odot$ is the element-wise operator, which can also be represented as $\code{.*}$ in MATLAB.  It is also important to remove the term for $\delta_{2,0}$ because there is no gradient term defined for the bias unit in the second layer.
+\begin{align}
+	\vec{\delta}_3 &= \vec{h} - y \label{eq:backprop_delta_3}\\
+	\vec{\delta}_2 &= \mat{\Theta_2}^T \cdot \vec{\delta}_3 \odot g\left(\mat{X} \mat{\Theta_1}\right) \label{eq:backprop_delta_2}
+\end{align}
+
+Using $\delta$, the gradient of $\mat{\Theta_1}$ and $\mat{\Theta_2}$ can be calculated using Equation \ref{eq:backprop_theta1_grad} and Equation \ref{eq:backprop_theta2_grad}.
+\begin{align}
+	\frac{\partial J(\Theta)}{\partial \Theta_1} &= \frac{1}{m} \left(\vec{\delta}_2^T \cdot \vec{a}_1 \right) \label{eq:backprop_theta1_grad} \\
+	\frac{\partial J(\Theta)}{\partial \Theta_2} &= \frac{1}{m} \left(\vec{\delta}_3^T \cdot \vec{a}_2 \right) \label{eq:backprop_theta2_grad}
+\end{align}
+
+The back propagation method for calculating the gradient is much faster than using a numerical method such as the finite difference approximation.  Many optimization algorithms will default to the forward finite difference gradient approximation if a gradient function is not supplied, so it is important to provide the optimization function with both the cost function and gradient function.
+
+\subsection{Training the model}
+Now that a neural network model has been set up and mathematically described, the model needs to be trained.  In other words, this means finding values for $\mat{\Theta_1}$ and $\mat{\Theta_2}$ that minimize the cost function, $J(\Theta)$.  Optimization functions generally assume the parameters are in a single vector (rather than 2 separate matrices).  $\mat{\Theta_1}$ and $\mat{\Theta_2}$ can be flattened into a single vector, and unrolled into matrices when they are used in calculations.  An example of flattening the parameters into a single vector using Python (with the numpy package) is shown below:
+\begin{equation} \nonumber
+	\code{nn\_params = numpy.append(Theta1.flatten(), Theta2.flatten())}
+\end{equation}
+
+To train the model, the parameters are minimized using the $\code{fmincg}$ function from the $\code{scipy.optimize}$ package.  This is a nonlinear conjugate gradient algorithm that was developed by Polak and Ribliere \cite{numerical_fmin_cg}.  Figure \ref{fig:nn_cost_function} shows the cost function during the optimization process.  \textit{It is very important that the parameters $\mat{\Theta_1}$ and $\mat{\Theta_2}$ are initialized randomly before the training process.}  If all of the values are initialized to zero, the model will not develop distinct weights for each connection.  This is a property of neural networks and is usually standard practice when training models.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{nn_cost_function}
+\decoRule
+\caption{This figure shows the cost function of the neural network in Figure \ref{fig:neural_network_diagram} during the optimization process. This figure was created with Python.}
+\label{fig:nn_cost_function}
+\end{figure}
+
+\subsection{Applying the model}
+Minimizing the cost function results in optimized parameters for $\mat{\Theta_1}$ and $\mat{\Theta_2}$.  Figure \ref{fig:nn_hidden_layer_decision_boundary} shows a decision boundary plot using the hidden layer activations as input variables.  When this plot is compared to the 2-variable data in Figure \ref{fig:logistic_regression_order10_decision_boundary_reg}, the variables in Figure \ref{fig:nn_hidden_layer_decision_boundary} seem to be a much better choice of inputs.  These are abstract variables that can be fit to a linear model (notice the straight line defining the decision boundary) to describe the state of the turbine.
+
+For clarification, the data shown in Figure \ref{fig:nn_hidden_layer_decision_boundary} are internal variables used in the neural network classification algorithm and are created from the same 256-point DFT data as the previous plots.  This model has a prediction accuracy of 85 - 95\% on the test data depending on how the variables are randomly initialized.  This variability is a result of a lack of training and test data.  For a proper neural network model more data is always better.  Unlike the nonlinear KNN algorithm, neural networks are nonlinear algorithms that have a relatively constant prediction time.  More data will not change the computational time required to calculate an output with a new test data set.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{nn_hidden_layer_decision_boundary}
+\decoRule
+\caption{This figure shows the decision boundary of the hidden layer activations of the neural network model shown in Figure \ref{fig:neural_network_diagram}.  These 2 parameters are the abstract variables that the network created to linearly classify the system. This figure was created with Python.}
+\label{fig:nn_hidden_layer_decision_boundary}
+\end{figure}
+
+\subsubsection{Increasing the architecture complexity}
+\todo{complete or delete this section}
+The previous model was designed using the structure in Figure \ref{fig:neural_network_diagram}, which was chosen because the hidden layer only has 2 units.  This makes it easy to visualize the intermediate results of the model.  More complicated neural network models are possible, but they are harder to conceptualize and visualize.  For example, Figure \ref{fig:neural_network_diagram_complex} shows a version of a 3 
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{neural_network_diagram_complex}
+\decoRule
+\caption{This figure shows the decision boundary of the hidden layer activations of the neural network model shown in Figure \ref{fig:neural_network_diagram}.  These 2 parameters are the abstract variables that the network created to linearly classify the system. This figure was created with Python.}
+\label{fig:neural_network_diagram_complex}
+\end{figure}
 
 
-
-
-
+\todo{Add next steps and fix bibliography}
 

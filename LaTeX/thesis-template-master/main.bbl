@@ -8,6 +8,18 @@ K-nearest neighbors.
 Lock-in amplifier and applications.
 \newblock 2011.
 
+\bibitem{flops_performance}
+A simple benchmark of various math operations.
+\newblock 2014.
+
+\bibitem{confusion_matrix}
+Simple guide to confusion matrix terminology.
+\newblock 2014.
+
+\bibitem{stm32_floating_point}
+Floating point unit demonstration on stm32 microcontrollers.
+\newblock 2016.
+
 \bibitem{LIA_document}
 About lock-in amplifiers.
 \newblock {\em thinkSRS}, 2017.
@@ -24,14 +36,45 @@ Wikipedia: Finite impuse response.
 Wikipedia: Infinite impulse response.
 \newblock \url{https://en.wikipedia.org/wiki/Infinite_impulse_response}, 2018.
 
+\bibitem{wiki_DFT}
+Discrete fourier transform.
+\newblock 2019.
+
+\bibitem{draw_io}
+Draw.io.
+\newblock 2019.
+
+\bibitem{wiki_fft}
+Fast fourier transform.
+\newblock 2019.
+
+\bibitem{knn_python}
+K-nearest neighbors algorithm using python.
+\newblock 2019.
+
+\bibitem{wind_turbine_accidents}
+S.~Asian, G.~Ertek, C.~Haksoz, S.~Pakter, and S.~Ulun.
+\newblock Wind turbine accidents: A data mining study.
+\newblock {\em IEEE Systems Journal}, 11:1567--1578, 09 2017.
+
 \bibitem{embedded_goertzel}
 K.~Banks.
 \newblock The goertzel algorithm.
 \newblock {\em Embedded}, 2002.
 
+\bibitem{gradient_descent}
+M.~Cheatsheet.
+\newblock Gradient descent.
+\newblock 2017.
+
 \bibitem{zoom_fft_ref}
 D.~A.~R. Collins.
 \newblock Zoom fft.
+
+\bibitem{finite_difference_method}
+F.~difference method.
+\newblock Finite difference method.
+\newblock 2019.
 
 \bibitem{WT_failures_paper}
 R.~M. Edward~Malnick.
@@ -75,6 +118,12 @@ W.~McCutcheon.
 \newblock Deflections and stresses in circular tapered beams and poles.
 \newblock {\em Civil Engineering for Practicing and Design Engineers}, 1983.
 
+\bibitem{numerical_fmin_cg}
+J.~Nocedal and S.~Wright.
+\newblock {\em Numerical Optimization}.
+\newblock Springer Series in Operations Research and Financial Engineering.
+  Springer New York, 2006.
+
 \bibitem{NSET_vibration_modeling}
 D.~I. Peng~Guo.
 \newblock Wind turbine tower vibration modeling and monitoring by the nonlinear
@@ -86,11 +135,11 @@ W.~H. Press and S.~A. Teukolsky.
 \newblock Savitzky-golay smoothing filters.
 \newblock {\em American Institute of Physics}, 1990.
 
-\bibitem{UK_turbine_failures}
-M.~D. Reder.
-\newblock Wind turbine failures - tackling current problems in failure datra
-  analysis.
-\newblock {\em Journal of Physics: Conference Series}, 2016.
+\bibitem{butter_filter_design}
+J.~O. Smith.
+\newblock {\em Introduction to digital filters: with audio applications},
+  volume~2.
+\newblock Julius Smith, 2007.
 
 \bibitem{data_driven_online_monitoring}
 A.~D.~B. Thomas~Kenbeek, Stella~Kapodistria.

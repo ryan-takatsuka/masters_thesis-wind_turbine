@@ -2,8 +2,6 @@
 
 \label{ch_introduction} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{Chapter1}
 
-\todo{Add a short section about the significance of wind turbine failures and the advantages of using conditioning monitoring.}
-
 %----------------------------------------------------------------------------------------
 %	SECTION 1
 %----------------------------------------------------------------------------------------
@@ -29,32 +27,29 @@ Cal Poly’s wind turbine is in the Escuela Ranch in an unpopulated area.  The t
 \section{Turbine Failures}
 The goal of this project is to develop a method for detecting a rotor imbalance that could be potentially harmful to the turbine.  This would allow the turbine to be shut down before any failures occur.  
 
-A common method for tracking and preventing turbine failures is the use of Supervisory Control and Data Acquisition (SCADA) alarms\cite{WT_failures_paper}.  SCADA is a control system architecture that uses high-level graphical user interfaces networked with peripheral devices (such as PLCs and PID controllers).  This is an effective method for predicting turbine failure, but can be expensive and complicated to implement.  An example of SCADA alarm results are shown in Figure \ref{fig:SCADA_table}.
+A common method for tracking and preventing turbine failures is the use of Supervisory Control and Data Acquisition (SCADA) alarms \cite{WT_failures_paper}.  SCADA is a control system architecture that uses high-level graphical user interfaces networked with peripheral devices (such as PLCs and PID controllers).  This is an effective method for predicting turbine failure, but can be expensive and complicated to implement.  An example of SCADA alarm results are shown in Figure \ref{fig:SCADA_table}.  In this table, the turbines are categorized by type and the failure rate is listed along with the number of SCADA alarms.  The SCADA systems for this analysis use threshold detection on various parameters of the turbine.  About 80\% of the failures in this table are caused by turbine components, and only about 2 - 3\% of failures are caused by environmental conditions (the remaining failures fall into the ``other" category \cite{wind_turbine_failures}).
 
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.4]{SCADA_table}
 	\decoRule
-	\caption{Data used for the SCADA Alarms and Failure Analysis \cite{wind_turbine_failures}. \todo{Describe/explain the results in the SCADA table.}
-}
+	\caption{Data used for the SCADA Alarms and Failure Analysis \cite{wind_turbine_failures}}
 	\label{fig:SCADA_table}
 \end{figure}
 
-According to a report on UK wind farms\cite{UK_turbine_failures}, there have been 1500 wind turbine-related accidents within 5 years.  Of those accidents, there were a total of 400 injuries to workers.  Many of these accidents are preventable if there is a reliable self-diagnosing system installed on the turbine.  This report also mentions incidents where ice has build up on the blades.  Most of these failures should be preventable if the rotor imbalance was detected right away and the turbine was shut down.
-
+According to a study on wind turbine accidents \cite{wind_turbine_accidents}, there are 4 main categories of accidents.  These include transportation, construction, operation, and maintenance accidents, which can be caused by either nature, human error, or equipment failure.  According to the study, operation accidents are significantly more common than any other category of failures \cite{wind_turbine_failures}.  Most of the operation accidents (about 80\%) are caused by either equipment failures or nature events.  The detection method outlined in this document would hopefully be able to prevent many of the operation-based accidents, which are a majority of the turbine accidents.
 
 \section{Tower Vibration Research}
-Wind turbine tower vibrations are important to the health of turbines and have been studied before.  In one study, a nonlinear state estimation technique\cite{NSET_vibration_modeling} (NSET) is used to attempt to predict wind turbine failures.  This model uses SCADA data to relate different operating parameters to the health of the turbine.  Figure \ref{fig:NSET_vibration_modeling_correlation} shows the correlation of power, wind speed, torque, blade angle, and tower vibration.  According to this paper, the tower vibrations are not enough information to predict turbine failures.
+Wind turbine tower vibrations are important to the health of turbines and have been studied before.  In one study, a nonlinear state estimation technique \cite{NSET_vibration_modeling} (NSET) is used to attempt to predict wind turbine failures.  This model uses SCADA data to relate different operating parameters to the health of the turbine.  Typically, many variables are used as inputs to determine turbine health and status because vibration alone isn't always sufficient \cite{NSET_vibration_modeling}.  When many variables are used, statistical model become significantly more complex and require large-scale optimization processes which is where machine learning models accel.
 
-\begin{figure}
-	\centering
-	\includegraphics[scale=0.8]{NSET_vibration_modeling_correlation}
-	\decoRule
-	\caption{Correlation between different turbine parameters \cite{NSET_vibration_modeling}. \todo{get less blurry picture and add some more explanation.}}
-	\label{fig:NSET_vibration_modeling_correlation}
-\end{figure}
+Most tower vibration analyses are empirically derived because of the stochastic nature of the wind speed and the amount of variables affecting the turbine.  Data-driven models \cite{data_driven_online_monitoring} are very common in the wind power space, especially with monitoring systems such as SCADA.
 
-The research in \cite{NSET_vibration_modeling} attempts to detect \textit{any} turbine failure, while detecting only rotor imbalances may be slightly easier.
+\section{Small turbine monitoring system}
+As previously discussed, there are a lot of options for large-scale turbine monitoring, but they are expensive and difficult to implement and maintain because many of them need to be directly integrated with the turbine computer to collect the necessary data parameters.  Small-scale turbine systems don't have all of the same requirements as the large-scale systems.  It is valuable to have a lightweight and inexpensive device that can monitor the health of a turbine without requiring direct integration to internal operation parameters.  Ideally, this device should be able to detect impending problems, halt operation, and notify the maintenance operator.
 
-Most tower vibration analyses are empirically derived because of the stochastic nature of the wind speed and the amount of variables affecting the turbine.  Data-driven models\cite{data_driven_online_monitoring} are very common in the wind power space, especially with monitoring systems such as SCADA.
+A small-turbine monitoring system would reduce the frequency of maintenance because it would only need to be checked when the system reports possible trouble.  It would also reduce the operation and maintenance cost by stopping all operations when there is a possible problem.  Because this device won't have access to internal operating parameters (such as generator power, internal temperature, rotor speed, wind speed, and wind direction), it will need to monitor the turbine vibrations, which can efficiently be done using accelerometers.  One common turbine problem is a rotor imbalance, caused by either blade damage, loose fasteners, or build-up material on the blades.  If the monitoring device can detect these imbalances, the turbine can be fixed before any additional damage is done.
+
+Additionally, an ideal monitoring device would be wireless and battery-powered.  This means the processor should be very low-power and will need very efficient algorithms and data processing methods when acquiring data and making predictions.  This document will discuss various signal processing methods and their efficiencies, along with analyzing a few machine learning models for rotor imbalance predictions.
+
+
 
