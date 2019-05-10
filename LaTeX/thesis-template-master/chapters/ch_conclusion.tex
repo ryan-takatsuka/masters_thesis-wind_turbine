@@ -1,0 +1,37 @@
+\chapter{Conclusion} % Main chapter title
+
+\label{ch_conclusion} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{Chapter1}
+
+%----------------------------------------------------------------------------------------
+%	SECTION: Summary
+%----------------------------------------------------------------------------------------
+\section{Summary}
+There are many ways to process the experimental acceleration data from the tower, depending on the computational power and stability of the rotor speed.  A lock-in amplifier and the Goertzel algorithm are good methods for calculating a single frequency component.  These work well when the signal of interest falls at a known frequency, such as if the rotor speed is being measured independently.  Additionally, Zoom FFTs can be used to significantly reduce the computational load if only a small frequency region is of interest.  Zoom FFTs involve shifting, filtering and decimating the raw data before it is translated into the frequency domain using a standard FFT algorithm.  This method is ideal if the target frequency range is much smaller than the sampling rate of the system.  For example, a Zoom FFT is a good choice if the acceleration data is sampled at 128 Hz, but the rotor frequency only varies from 2-4 Hz.  If the classification algorithm uses the entire frequency spectrum as feature inputs, the performance can be significantly improved by removing the frequency components that don't contain useful information, such as any frequency significantly higher than the rotor frequency.
+
+The classification algorithms are a type of supervised machine learning, which means they use training data that has pre-defined labels.  Each experimental data set must be be labeled as either `good" or ``bad" (balanced/not balanced) prior to training the model.  The K-Nearest Neighbors (KNN) algorithm works well with small data sets because it just stores all the training data in memory and uses this information to determine how close a new data set is to previous data sets.  The KNN algorithm does not scale well, so it is not a good choice when more data is obtained of if more features (input parameters) are used.  Standard logistic regression is the process of fitting a linear model to data with discrete class outputs.  This model does not work well with just 2 features (maximum magnitude and corresponding frequency), because they cannot be separated by a linear function.  Logistic regression can be modified to include higher order terms to better fit the experimental data, or more features can be used.
+
+If all 256 FFT points are used as input features, logistic regression performs very well and is easy to conceptualize because it is still a linear model.  This type of model benefits from more experimental data to better train and test the model with different data sets.  To take the classification algorithm even further, abstract features can be added to the logistic regression model to create neural networks.  When many abstract feature layers (hidden layers) are added, these models can be classified as deep neural networks.  Neural networks are great for modeling complex non-linear systems, or when the amount of input features is large.  A neural network is a great classification algorithm structure to have that will allow easy scalabilty when more data is collected or more features are measured.
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION: Next Steps
+%----------------------------------------------------------------------------------------
+\section{Next Steps}
+The immediate next step is to collect more data.  Machine learning algorithms require lots of training data to optimize the internal parameters.  A good reference is to have about 10 times the amount of training data as features or trainable parameters.  This project used about 100 data sets for 256 features, so ideally, there would be at least 2560 data sets to train the models.
+
+The turbine tower model can be expanded to include a more complicated forced input or a more complicated mechanical model.  If the model is accurate enough, it can be used to simulate balances and imbalances and create training data for the machine learning algorithm.  Additionally, this would allow the machine learning algorithm to be trained on datasets that represent turbine failures and could be too dangerous to experimentally collect.
+
+In addition to collecting more raw data, it would be best to collect data over a variety of operating conditions.  For example, running the turbine for 20 hours and collecting consecutive data won't account for day-to-day fluctuations in wind speed, weather, and temperature.  These new data sets might show the need to new features to be added, such temperature, wind speed, or acceleration direction as well as magnitude.
+
+After achieving a successful classification model, it might be desirable to reduce the power usage of the detection device.  This would most likely involve switching to a low power processor and reducing the amount of calculations that can be performed.  This would require optimized versions of frequency transformations, such as Zoom FFTs or lock-in amplifiers.
+
+Finally, a deeper investigation into machine learning classification algorithms can be done to choose the ideal model for this application.  For example, it might be useful to use an unsupervised algorithm that can create its own groups for the data, or maybe a neural network with a more complicated architecture can be used to better fit the data.
+
+
+
+
+\todo{fix bibliography}
+
+
+
+

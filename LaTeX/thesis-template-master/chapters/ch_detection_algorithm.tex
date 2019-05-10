@@ -342,18 +342,57 @@ For clarification, the data shown in Figure \ref{fig:nn_hidden_layer_decision_bo
 \label{fig:nn_hidden_layer_decision_boundary}
 \end{figure}
 
-\subsubsection{Increasing the architecture complexity}
-\todo{complete or delete this section}
-The previous model was designed using the structure in Figure \ref{fig:neural_network_diagram}, which was chosen because the hidden layer only has 2 units.  This makes it easy to visualize the intermediate results of the model.  More complicated neural network models are possible, but they are harder to conceptualize and visualize.  For example, Figure \ref{fig:neural_network_diagram_complex} shows a version of a 3 
+\subsubsection{Deep Learning}
+A deep learning network is a neural network with multiple layer of nonlinear processing units.  The previous model was designed using the structure in Figure \ref{fig:neural_network_diagram}, which was chosen because the hidden layer only has 2 units.  This makes it easy to visualize the intermediate results of the model.  More complicated neural network models are possible, but they are harder to conceptualize and visualize.  For example, Figure \ref{fig:deep_nn_diagram} shows a version of a 6-layer neural network with 4 hidden layers.  The multiple layers in deep neural networks are abstract representations of system features.
+
+To design a deep neural network, the Keras \cite{keras} API for TensorFlow \cite{tensorflow} is used to simplify the process.  This model has 4 hidden layers, each with 50 units per layer, which is a total of 18,551 parameters that need to be optimized when the 256 FFT values are used as inputs (shown in Table \ref{t:deep_nn_design}).  The ReLU activation function is the rectified linear unit, which is defined as $g_{relu}$ (Equation \ref{eq:relu_function}).  ReLU functions are commonly used for deep neural network hidden layer activation functions because they are cheap to compute and generally converge faster.  The sigmoid function is still required for the output layer because this needs to calculate a probability.
+\begin{equation} \label{eq:relu_function}
+	g_{relu}(x) = \max{(0, x)}
+\end{equation}
 
 \begin{figure}
 \centering
-\includegraphics[scale=0.8]{neural_network_diagram_complex}
+\includegraphics[scale=0.6]{deep_nn_diagram}
 \decoRule
-\caption{This figure shows the decision boundary of the hidden layer activations of the neural network model shown in Figure \ref{fig:neural_network_diagram}.  These 2 parameters are the abstract variables that the network created to linearly classify the system. This figure was created with Python.}
-\label{fig:neural_network_diagram_complex}
+\caption{This figure shows an example of a deep learning network compared with a simple neural network (like the one in Figure \ref{fig:neural_network_diagram}) \cite{mnist_deep_learning}.}
+\label{fig:deep_nn_diagram}
 \end{figure}
 
+\begin{table}[]
+\centering
+\caption{Deep neural network design}
+\label{t:deep_nn_design}
+\vspace*{0.2in}
+\begin{tabular}{|c|c|c|}
+\rowcolor[HTML]{EFEFEF} 
+\hline
+\textbf{Layer} & \textbf{Number of Units} & \textbf{Activation Function} \\ \hline
+Input Layer & 256 & None \\ \hline
+Hidden Layer 1 & 50 & ReLU \\ \hline
+Hidden Layer 2 & 50 & ReLU \\ \hline
+Hidden Layer 3 & 50 & ReLU \\ \hline
+Hidden Layer 4 & 50 & ReLU \\ \hline
+Output Layer & 1 & Sigmoid \\ \hline
+\end{tabular}
+\end{table}
 
-\todo{Add next steps and fix bibliography}
+This is a complex model that cannot be visualized using a decision boundary plot like the previous models.  Complex models can be prone to overfitting, which means they effectively memorize the training data and perform poorly on new test data.  Epochs, or iterations, can be manually set to limit model overfitting.  For every epoch, the training loss should be decreasing because the optimization process is taking a new step towards minimizing the loss.  If the model is actually improving, the test data loss should also be increasing.  Once the model begins to start overfitting, the test loss will start to increase.  This shows that the model has started to memorize the training data and is not doing a good job at predicting outputs on the new (test) data.  Figure \ref{fig:python_deep_nn_loss} shows a plot of the training and test data loss over each epoch.  It can be seen that the optimum amount of epochs is about 200, because more will cause the testing loss to increase.  This can be verified in Figure \ref{fig:python_deep_nn_accuracy}, which shows the test and training data reach a maximum accuracy at about 200 epochs also.  Any more iterations (epochs) will cause the model to overfit the training data and will not improve the calculated accuracy.
+
+When the iteration process is stopped after 200 epochs, the training data accuracy is 97\%; however, this is not expected to be a good representation of the performance of the neural network.  Test data accuracy is a much better representation because it tests the model on new data.  The test data accuracy for this model is about 91\%.
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{python_deep_nn_loss}
+\decoRule
+\caption{This figure shows the loss (cost function value) for the training and test data using the model with a structure shown in Table \ref{t:deep_nn_design}.  This figure was created with Python.}
+\label{fig:python_deep_nn_loss}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.8]{python_deep_nn_accuracy}
+\decoRule
+\caption{This figure shows the accuracy of the training and test data using the model with a structure shown in Table \ref{t:deep_nn_design}. This figure was created with Python.}
+\label{fig:python_deep_nn_accuracy}
+\end{figure}
 
