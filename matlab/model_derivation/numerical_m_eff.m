@@ -1,5 +1,5 @@
-%% numerical_ky.m
-% Solve for ky numerically
+%% numerical_m_eff.m
+% Solve for m_eff numerically
 
 %% Initialization
 clear
@@ -13,8 +13,10 @@ d_b = 20 * u.in;
 t = 0.2 * u.in;
 E = 30e6 * u.psi;
 F = 1 * u.N;
-m = 474 * u.kg;
+m_nacelle = 474 * u.kg;
+rho = 8050 * u.kg/(u.m^3);
 
+% Create the vector for the tower height
 z = linspace(0*u.ft, z_0, 1000);
 
 % Convert to non dimensional units
@@ -49,6 +51,14 @@ y = cumtrapz(z, theta);
 % Spring constant
 ky = 1 ./ y;
 
+% Calculate the cross sectional area
+A = (pi*(d/2).^2) - (pi*((d-2*t)/2).^2);
+
+% Calculate the normalized displacement
+y_n = y / max(abs(y));
+
+% Calculate the effective mass at the end of the tower
+m_eff = trapz(z, rho*A.*(y_n.^2));
 
 %% Extract values from data and remove units
 z = z ./ u.m;
@@ -87,5 +97,15 @@ xlabel('Height, z [m]')
 ylabel('y/F [m/N]')
 grid on
 
+
+% Calculate the total mass
+m_total = m_nacelle + m_eff;
+
+% Print out the spring constant 
+ky(end)
+
+% Calculate the natural frequency
+wn = sqrt(ky(end) / m_total)
+fn = wn/2/pi
 
 

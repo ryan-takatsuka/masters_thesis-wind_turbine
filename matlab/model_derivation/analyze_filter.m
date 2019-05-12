@@ -6,15 +6,18 @@ close all
 clc
 
 %% analyze filter
+% The filter parameters
 n = 2;
 wn = 0.2;
 
+% Create the butterworth filter
 [b, a] = butter(n, wn);
 
+% Calculate the filter response
 [h, w] = freqz(b, a);
 [h_ma, w_ma] = freqz(ones(4,1)/4, 1);
 
-
+% Plots
 figure
 plot(w/2/pi, mag2db(abs(h)), 'k', 'LineWidth', 2, ...
     'DisplayName', 'Butterworth IIR filter')
