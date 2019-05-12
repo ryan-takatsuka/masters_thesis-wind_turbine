@@ -1,3 +1,12 @@
+'''
+This file runs the custom logistic regression model for the 
+experimental data.
+
+Author: Ryan Takatsuka
+
+'''
+
+
 # Import stuff
 import split_dft
 import LifeLine_file
@@ -40,26 +49,19 @@ Y = []
 exp_data.add_all_variables(X, Y)
 exp_data2.add_all_variables(X, Y)
 
-
 # Create the detection model for determining an imbalance in the rotor
 LR_model = logisticRegressionModel.logisticRegressionModel(X, Y, lambda0=1, order=1)
 
-m = LR_model.X.shape[0]
-n = LR_model.X.shape[1]
-
-X = LR_model.X
-theta = np.zeros((n+1, 1))
-lambda0 = 0
-Y = LR_model.Y
-
-
+# Train the logistic regression model
 result = LR_model.train_model()
+
+# Make predictions with the test data
 pred, accuracy = LR_model.predict(LR_model.X_test, LR_model.Y_test)
 print('The model accuracy: ', accuracy, '%')
 
 # Plot some results
 LR_model.plot_iteration() # plot the cost function during the optimization process
 # LR_model.plot_decision_boundary(LR_model.X, LR_model.Y, num_points=200, smooth=True) # db
-# LR_model.plot_theta(exp_data.frequencies)
+LR_model.plot_theta(exp_data.frequencies)
 plt.show()
 

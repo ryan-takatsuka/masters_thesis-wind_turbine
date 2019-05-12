@@ -503,7 +503,7 @@ class neuralNetworkModel:
 		cmap_bold = ListedColormap(['#FF0000', '#00FF00'])
 
 
-		a2 = nn_result["a2"][:,1:3]
+		# a2 = nn_result["a2"][:,1:3]
 		a2 = nn_result["z2"]
 
 

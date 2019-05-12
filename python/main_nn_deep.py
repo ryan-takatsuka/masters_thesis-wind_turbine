@@ -1,3 +1,11 @@
+'''
+This file trains and validates a deep neural network model using
+the Keras API on top of TensorFlow
+
+Author: Ryan Takatsuka
+
+'''
+
 # Import stuff
 import split_dft
 import LifeLine_file
@@ -44,12 +52,12 @@ X_train, X_test, Y_train, Y_test = train_test_split(X, Y, test_size=0.2)
 
 # Create the model
 model = Sequential()
-model.add(Flatten(input_shape=(X.shape[1],)))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(50, activation='relu'))
-model.add(Dense(1, activation='sigmoid'))
+model.add(Flatten(input_shape=(X.shape[1],))) # Add the input layer
+model.add(Dense(50, activation='relu')) # Add a hidden layer
+model.add(Dense(50, activation='relu')) # Add a hidden layer
+model.add(Dense(50, activation='relu')) # Add a hidden layer
+model.add(Dense(50, activation='relu')) # Add a hidden layer
+model.add(Dense(1, activation='sigmoid')) # Add the output layer
 
 # Create the adam optimizer and specify the learning rate
 adam = tf.keras.optimizers.Adam(lr=1e-4)
@@ -66,10 +74,11 @@ history = model.fit(X_train, Y_train, epochs=200, shuffle=True,
 # Evaluate the new model
 loss, accuracy = model.evaluate(X_test, Y_test)
 
+# Print the accuracy results and the model summary
 print('Model Accuracy: ', accuracy)
 print(model.summary())
 
-# summarize history for accuracy
+# Plot the test and training accuracy
 plt.figure()
 plt.plot(history.history['accuracy'])
 plt.plot(history.history['val_accuracy'])
@@ -78,8 +87,8 @@ plt.ylabel('Accuracy [x/1]')
 plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='lower right')
 plt.grid('on')
-# plt.show()
-# summarize history for loss
+
+# Plot the test and training loss
 plt.figure()
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
@@ -89,5 +98,3 @@ plt.xlabel('Epoch')
 plt.legend(['Train', 'Test'], loc='upper right')
 plt.grid('on')
 plt.show()
-
-print(history.history['accuracy'])

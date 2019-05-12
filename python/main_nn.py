@@ -1,3 +1,10 @@
+'''
+This file runs the custom neural network on the experimental data
+
+Author: Ryan Takatsuka
+
+'''
+
 # Import stuff
 import split_dft
 import LifeLine_file
@@ -6,7 +13,6 @@ import detectionModel
 import matplotlib.pyplot as plt
 import numpy as np
 import neuralNetworkModel
-
 
 # Filenames with experimental data
 filename = 'experimental_data//WDFT_2018-04-01_160352.txt'
@@ -44,10 +50,8 @@ print('The model accuracy: ', accuracy, '%')
 # Plot some results
 nnModel.plot_iteration() # plot the cost function during the optimization process
 nnModel.plot_decision_boundary(nnModel.X, nnModel.Y, num_points=1000) # db
-# plt.show()
 
-# print(nnModel.nn_result['Theta1'][0])
-
+# Plot the weights for Theta1
 plt.figure()
 for i in range(hidden_layer_size):
 	plt.plot(exp_data.frequencies, nnModel.nn_result['Theta1'][i,1:])
