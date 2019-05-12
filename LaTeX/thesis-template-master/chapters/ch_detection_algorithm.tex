@@ -21,7 +21,7 @@ Typically, it is common for machine learning algorithms to split the data into t
 	\centering
 	\includegraphics[scale=0.8]{LL_spectrogram}
 	\decoRule
-	\caption{This figure shows the spectrogram of the tower accelerations.}
+	\caption{This figure shows the spectrogram of the tower accelerations.  This figure was created with Python.}
 	\label{fig:LL_spectrogram}
 \end{figure}
 
@@ -43,7 +43,7 @@ The k-nearest neighbor (KNN) algorithm is one of the simplest models, but can be
 
 The K-NN algorithm uses a "majority voting" method where the Euclidian distance between all the training data points and the test data is calculated.  This model assumes there is a relatively equal amount of balanced rotor experimental data and imbalanced experimental rotor data, which means the sample weighting can be uniform.  If there is a much higher frequency class (for example, much more balanced experimental data), this class will tend to dominate the calculations regardless of the actual class of the test data.
 
-The number of neighbors, $k$, is chosen to be 5 for this algorithm (using trial and error).  A larger value of $k$ will reduce the classification noise, but the boundaries are much more general and not as tuned to the training data.  A lower value of $k$ will match the model very closely to the training data, but may add noise into the classification process.
+The number of neighbors, $k$, is chosen to be 3 for this algorithm (using trial and error).  A larger value of $k$ will reduce the classification noise, but the boundaries are much more general and not as tuned to the training data.  A lower value of $k$ will match the model very closely to the training data, but may add noise into the classification process.
 
 The Euclidean distance is simply the distance between the data points.  This equation is shown below:
 
@@ -56,14 +56,14 @@ The KNN algorithm works well on small data sets, so the DFT data should be pre-p
 
 Figure \ref{fig:single_dft} shows the frequency spectrum from a single DFT calculation.  To convert this data into 2-dimensional data for the KNN algorithm, the peak value and corresponding frequency are extracted from this data.  For example, Figure \ref{fig:single_dft} would produce a 2-dimensional data set as shown in Equation \ref{eq:2d_data}.
 \begin{equation} \label{eq:2d_data}
-	[frequency, amplitude, class] = [2.3, 1.0, Class A]
+	[x_1, x_2, y] = [frequency, amplitude, class] = [2.3, 1.0, Class A]
 \end{equation}
 
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.4]{single_dft}
 	\decoRule
-	\caption{This figure shows a single DFT result (a single column from Figure \ref{fig:LL_spectrogram}).}
+	\caption{This figure shows a single DFT result (a single column from Figure \ref{fig:LL_spectrogram}).  This figure was created with Python.}
 	\label{fig:single_dft}
 \end{figure}
 
@@ -73,7 +73,7 @@ By converting the entire data set for all training examples into 2-dimensional d
 	\centering
 	\includegraphics[scale=0.8]{max_balanced_freq_mag}
 	\decoRule
-	\caption{This figure shows a the 2-dimensional data used as an input to the KNN classification algorithm.}
+	\caption{This figure shows a the 2-dimensional data used as an input to the KNN classification algorithm.  This figure was created with Python.}
 	\label{fig:max_balanced_freq_mag}
 \end{figure}
 
@@ -110,7 +110,7 @@ C_{confusion} =
 	\centering
 	\includegraphics[scale=0.8]{knn_decision_boundary_k_3}
 	\decoRule
-	\caption{This figure shows the classification boundary for the KNN algorithm with $K=3$ for all of the training data.}
+	\caption{This figure shows the classification boundary for the KNN algorithm with $K=3$ for all of the training data.  This figure was created with Python.}
 	\label{fig:knn_decision_boundary_k_3}
 \end{figure}
 
@@ -128,7 +128,7 @@ Linear regression is the process of minimizing the least squares cost of a data 
 \begin{align}
 	J\left(\vec{\theta}\right) &= \frac{1}{2m} \sum_{i=1}^{m}{\left(h_{\theta}(x_i) - y_i\right)^2} \label{eq:linear_regression_cost_fun} \\
 	h_{\theta}(x) &= \mat{x} \cdot \vec{\theta}^T \label{eq:linear_regression_hypothesis} \\
-	\vec{\theta} &= [\theta_1, \theta_2, \theta_3, \hdots, \theta_n]
+	\vec{\theta} &= [\theta_0, \theta_1, \theta_2, \theta_3, \hdots, \theta_n]
 \end{align}
 
 $n$ is the number of parameters (or features) in the input, $\mat{x}$.  $m$ is the number of training examples, which means $\mat{x}$ is of size $[m, n]$ and $\vec{\theta}$ is a vector with $n$ elements.
@@ -142,7 +142,7 @@ In order to apply linear regression to classification problems, the sigmoid func
 	\centering
 	\includegraphics[scale=0.6]{sigmoid_plot}
 	\decoRule
-	\caption{This figure shows the sigmoid function plot.}
+	\caption{This figure shows the sigmoid function plot.  This figure was created with MATLAB.}
 	\label{fig:sigmoid_plot}
 \end{figure}
 
@@ -167,7 +167,7 @@ To train the model, the cost function is minimized using a version of the gradie
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_2_feature_cost}
 	\decoRule
-	\caption{This figure shows the cost function during the training process.  This model uses 2 features, so the model is trying to optimize $\vec{\theta} = [\theta_1, \theta_2, \theta_3]$ (3 parameters because there is a hidden bias unit).}
+	\caption{This figure shows the cost function during the training process.  This model uses 2 features, so the model is trying to optimize $\vec{\theta} = [\theta_0, \theta_1, \theta_2]$ (3 parameters because there is a hidden bias unit).  This figure was created with Python.}
 	\label{fig:logistic_regression_2_feature_cost}
 \end{figure}
 
@@ -178,7 +178,7 @@ Minimizing the cost function results is a trained model that produces the decisi
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_decision_boundary}
 	\decoRule
-	\caption{This figure shows the decision boundary from the logistic regression model.  This is a linear model using 2 input parameters and a binary output class.  This model has an accuracy of about 67\% when using the test data set.}
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a linear model using 2 input parameters and a binary output class.  This model has an accuracy of about 67\% when using the test data set.  This figure was created with Python.}
 	\label{fig:logistic_regression_decision_boundary}
 \end{figure}
 
@@ -193,7 +193,7 @@ To improve this model, the 2 input parameters can be expanded to create a higher
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_order2_decision_boundary}
 	\decoRule
-	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 2nd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.}
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 2nd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.  This figure was created with Python.}
 	\label{fig:logistic_regression_order2_decision_boundary}
 \end{figure}
 
@@ -201,7 +201,7 @@ To improve this model, the 2 input parameters can be expanded to create a higher
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_order3_decision_boundary}
 	\decoRule
-	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 3rd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.}
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 3rd order model using 2 input parameters and a binary output class.  This model has an accuracy of about 85\% when using the test data set.  This figure was created with Python.}
 	\label{fig:logistic_regression_order3_decision_boundary}
 \end{figure}
 
@@ -211,7 +211,7 @@ In fact, the order can keep getting increased until the model fits the training 
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_order10_decision_boundary}
 	\decoRule
-	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 10th order model using 2 input parameters and a binary output class, and has an over-fitting problem.  This model has an accuracy of about 81\% when using the test data set.  Notice that the accuracy of the over-fitting model on the test data is lower than the lower order models shown in Figure \ref{fig:logistic_regression_order2_decision_boundary}.}
+	\caption{This figure shows the decision boundary from the logistic regression model.  This is a 10th order model using 2 input parameters and a binary output class, and has an over-fitting problem.  This model has an accuracy of about 81\% when using the test data set.  Notice that the accuracy of the over-fitting model on the test data is lower than the lower order models shown in Figure \ref{fig:logistic_regression_order2_decision_boundary}. This figure was created with Python.}
 	\label{fig:logistic_regression_order10_decision_boundary}
 \end{figure}
 
@@ -226,7 +226,7 @@ Adding regularization to the 10th order model shown in Figure \ref{fig:logistic_
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_order10_decision_boundary_reg}
 	\decoRule
-	\caption{This figure shows the decision boundary from the logistic regression model using a regularization term of $\lambda=3$.  This is a 10th order model using 2 input parameters and a binary output class.  This model has an accuracy of about 86\% when using the test data set, which is higher than the 10th order model with no regularization (Figure \ref{fig:logistic_regression_order10_decision_boundary}).}
+	\caption{This figure shows the decision boundary from the logistic regression model using a regularization term of $\lambda=3$.  This is a 10th order model using 2 input parameters and a binary output class.  This model has an accuracy of about 86\% when using the test data set, which is higher than the 10th order model with no regularization (Figure \ref{fig:logistic_regression_order10_decision_boundary}).  This figure was created with Python.}
 	\label{fig:logistic_regression_order10_decision_boundary_reg}
 \end{figure}
 
@@ -236,7 +236,7 @@ The logistic regression function outputs the probability that the data set falls
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_decision_boundary_smooth}
 	\decoRule
-	\caption{This figure shows the probability of the model classifying certain data sets as Class A and Class B.  This model was trained with an order of 3 and a regularization parameter of $\lambda=1$.  The background color of the plot represents the probability of the data set being classified as Class A, with solid green being about 99\% certainty and solid red being about 1\% certainty.}
+	\caption{This figure shows the probability of the model classifying certain data sets as Class A and Class B.  This model was trained with an order of 3 and a regularization parameter of $\lambda=1$.  The background color of the plot represents the probability of the data set being classified as Class A, with solid green being about 99\% certainty and solid red being about 1\% certainty.  This figure was created with Python.}
 	\label{fig:logistic_regression_decision_boundary_smooth}
 \end{figure}
 
@@ -247,13 +247,13 @@ The logistic regression models in the previous section use only 2 features from 
 
 Using the whole frequency spectrum means the model will have 256 features (one for the magnitude of each frequency component).  This is a lot of features to use for the KNN algorithm and will be far too slow when more training data is acquired.  The benefit of regression-based models is that the computational cost to predict the class of new data remains the same regardless of how many training examples are used to optimize the model parameters.  This means that using more data will just improve the model without slowing down the real-time calculations (it will, however, make the training time much slower).
 
-Figure \ref{fig:logistic_regression_all_features_cost} shows a plot of the cost function value during the training process.  This is a common way of visually ensuring the model has converged to a local minimum. This produces an accuracy score of 95\% on the training data which is much higher than the scores from the 2-feature models in the previous section.
+Figure \ref{fig:logistic_regression_all_features_cost} shows a plot of the cost function value during the training process.  This is a common way of visually ensuring the model has converged to a local minimum. This produces an accuracy score of 95\% on the test data which is much higher than the scores from the 2-feature models in the previous section.
 
 \begin{figure}
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_all_features_cost}
 	\decoRule
-	\caption{This figure shows the cost function value during the training process with a regularization term of $\lambda=1$.  In this model, all 256 features are used as inputs.}
+	\caption{This figure shows the cost function value during the training process with a regularization term of $\lambda=1$.  In this model, all 256 features are used as inputs.  This figure was created with Python.}
 	\label{fig:logistic_regression_all_features_cost}
 \end{figure}
 
@@ -265,7 +265,7 @@ From inspecting Figure \ref{fig:logistic_regression_model_parameters}, it appear
 	\centering
 	\includegraphics[scale=0.8]{logistic_regression_model_parameters}
 	\decoRule
-	\caption{This figure shows the optimized model parameters for the logistic regression model using all the input features.  Each parameter corresponds to a specific frequency, which means that this function gets multiplied by the FFT of each data set and used to calculate the probability that the turbine is either balanced on not balanced.}
+	\caption{This figure shows the optimized model parameters for the logistic regression model using all the input features.  Each parameter corresponds to a specific frequency, which means that this function gets multiplied by the FFT of each data set and used to calculate the probability that the turbine is either balanced on not balanced.  This figure was created with Python.}
 	\label{fig:logistic_regression_model_parameters}
 \end{figure}
 
@@ -291,7 +291,7 @@ In Equation \ref{eq:nn_layer_2}, $\mat{X}$ is the input data of size $[m,n]$, wh
 
 The hypothesis of the model in Figure \ref{fig:neural_network_diagram} is calculated using Equation \ref{eq:nn_hypothesis}.  This is the predicted probability that the turbine is balanced or unbalanced for all the training examples.
 \begin{equation} \label{eq:nn_hypothesis}
-	\vec{h}_{\theta} = g\left(\mat{a2} \cdot \mat{\Theta_2} \right)
+	\vec{h}_{\theta} = g\left(\mat{a_2} \cdot \mat{\Theta_2} \right)
 \end{equation}
 
 The squared difference cost function of the neural network diagram is shown in Equation \ref{eq:nn_cost_function}.
@@ -302,7 +302,7 @@ The squared difference cost function of the neural network diagram is shown in E
 To calculate the analytic gradient of the cost function back propagation is required.  Back propagation is an algorithm is derived from calculus to determine the gradient of a neural network.  As the name suggests, this method starts from the neural network output and calculates the error of each layer, which can be related to the gradient.  First, $\delta$ for each layer is calculated as shown in Equation \ref{eq:backprop_delta_3} and Equation \ref{eq:backprop_delta_2}.  $\odot$ is the element-wise operator, which can also be represented as $\code{.*}$ in MATLAB.  It is also important to remove the term for $\delta_{2,0}$ because there is no gradient term defined for the bias unit in the second layer.
 \begin{align}
 	\vec{\delta}_3 &= \vec{h} - y \label{eq:backprop_delta_3}\\
-	\vec{\delta}_2 &= \mat{\Theta_2}^T \cdot \vec{\delta}_3 \odot g\left(\mat{X} \mat{\Theta_1}\right) \label{eq:backprop_delta_2}
+	\vec{\delta}_2 &= \mat{\Theta_2}^T \cdot \vec{\delta}_3 \odot g\prime \left(\mat{X} \mat{\Theta_1}\right) \label{eq:backprop_delta_2}
 \end{align}
 
 Using $\delta$, the gradient of $\mat{\Theta_1}$ and $\mat{\Theta_2}$ can be calculated using Equation \ref{eq:backprop_theta1_grad} and Equation \ref{eq:backprop_theta2_grad}.
@@ -342,7 +342,7 @@ For clarification, the data shown in Figure \ref{fig:nn_hidden_layer_decision_bo
 \label{fig:nn_hidden_layer_decision_boundary}
 \end{figure}
 
-\subsubsection{Deep Learning}
+\subsection{Deep Learning}
 A deep learning network is a neural network with multiple layer of nonlinear processing units.  The previous model was designed using the structure in Figure \ref{fig:neural_network_diagram}, which was chosen because the hidden layer only has 2 units.  This makes it easy to visualize the intermediate results of the model.  More complicated neural network models are possible, but they are harder to conceptualize and visualize.  For example, Figure \ref{fig:deep_nn_diagram} shows a version of a 6-layer neural network with 4 hidden layers.  The multiple layers in deep neural networks are abstract representations of system features.
 
 To design a deep neural network, the Keras \cite{keras} API for TensorFlow \cite{tensorflow} is used to simplify the process.  This model has 4 hidden layers, each with 50 units per layer, which is a total of 18,551 parameters that need to be optimized when the 256 FFT values are used as inputs (shown in Table \ref{t:deep_nn_design}).  The ReLU activation function is the rectified linear unit, which is defined as $g_{relu}$ (Equation \ref{eq:relu_function}).  ReLU functions are commonly used for deep neural network hidden layer activation functions because they are cheap to compute and generally converge faster.  The sigmoid function is still required for the output layer because this needs to calculate a probability.
@@ -376,7 +376,7 @@ Output Layer & 1 & Sigmoid \\ \hline
 \end{tabular}
 \end{table}
 
-This is a complex model that cannot be visualized using a decision boundary plot like the previous models.  Complex models can be prone to overfitting, which means they effectively memorize the training data and perform poorly on new test data.  Epochs, or iterations, can be manually set to limit model overfitting.  For every epoch, the training loss should be decreasing because the optimization process is taking a new step towards minimizing the loss.  If the model is actually improving, the test data loss should also be increasing.  Once the model begins to start overfitting, the test loss will start to increase.  This shows that the model has started to memorize the training data and is not doing a good job at predicting outputs on the new (test) data.  Figure \ref{fig:python_deep_nn_loss} shows a plot of the training and test data loss over each epoch.  It can be seen that the optimum amount of epochs is about 200, because more will cause the testing loss to increase.  This can be verified in Figure \ref{fig:python_deep_nn_accuracy}, which shows the test and training data reach a maximum accuracy at about 200 epochs also.  Any more iterations (epochs) will cause the model to overfit the training data and will not improve the calculated accuracy.
+This is a complex model that cannot be visualized using a decision boundary plot like the previous models.  Complex models can be prone to overfitting, which means they effectively memorize the training data and perform poorly on new test data.  Epochs, or iterations, can be manually set to limit model overfitting.  For every epoch, the training loss should be decreasing because the optimization process is taking a new step towards minimizing the loss.  If the model is actually improving, the test data loss should also be decreasing.  Once the model begins to start overfitting, the test loss will start to increase.  This shows that the model has started to memorize the training data and is not doing a good job at predicting outputs on the new (test) data.  Figure \ref{fig:python_deep_nn_loss} shows a plot of the training and test data loss over each epoch.  It can be seen that the optimum amount of epochs is about 200, because more will cause the testing loss to increase.  This can be verified in Figure \ref{fig:python_deep_nn_accuracy}, which shows the test and training data reach a maximum accuracy at about 200 epochs also.  Any more iterations (epochs) will cause the model to overfit the training data and will not improve the calculated accuracy.
 
 When the iteration process is stopped after 200 epochs, the training data accuracy is 97\%; however, this is not expected to be a good representation of the performance of the neural network.  Test data accuracy is a much better representation because it tests the model on new data.  The test data accuracy for this model is about 91\%.
 

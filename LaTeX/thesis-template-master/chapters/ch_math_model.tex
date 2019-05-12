@@ -8,7 +8,7 @@
 
 \section{Assumptions/Problem Statement}
 
-The turbine tower is modeled as a cantilever beam with a concentrated mass at the end.  The tower is assumed to be the cantilever beam, and the nacelle is assumed to be the concentrated mass at the end of the simplified beam.
+The turbine tower is modeled as a cantilever beam with a concentrated mass at the end.  The tower is the beam itself, and the nacelle is a concentrated mass at the end of the simplified beam.  The tower mass is condensed into an effective lump sum mass and added to the nacelle mass.  This allows the tower to be treated as a mass-less cantilever beam.
 
 This problem is treated as forced vibration, where the forcing function is a periodic force caused from an eccentric mass on the rotor.  This eccentric mass represents an imbalance in the turbine, and will cause vibrations in the tower.   Figure \ref{fig:annotated_tower} shows the simplified wind turbine model with the applied forces. The cross-section of the tower is assumed to taper linearly from the base to the top.
 
@@ -225,7 +225,7 @@ The above equation can be numerically approximated with a summation of $m$ eleme
 
 \begin{align}
 	y_d &= \sum_{j=0}^{m}{\left(\frac{F_y}{E} \sum_{i=0}^{n}{\frac{z_0-z_{ij}}{I(z_{ij})}\,\Delta z_i}\right) \Delta z_j} \\
-	y_d &= \frac{F_y}{E}\sum_{j=0}^{m}{\sum_{i=0}^{n}{\frac{z_0-z_{ij}}{I(z_{ij})}\,\Delta z_i} \Delta z_j}
+	y_d &= \frac{F_y}{E}\sum_{j=0}^{m}{\sum_{i=0}^{n}{\frac{z_0-z_{ij}}{I(z_{ij})}\,\Delta z_i} \Delta z_j} \label{eq:deflection_equation_sum}
 \end{align}
 
 To determine the spring constant, the deflection equation should be rewritten in the form, $F=-kx$, which in this case is:
@@ -247,13 +247,13 @@ From Equation \ref{eq:Fy_numerical}, is can be seen that the spring constant is:
 \rowcolor[HTML]{EFEFEF} 
 \hline
 \textbf{Parameter} & \textbf{Constant Top Area} & \textbf{Tapered Beam} & \textbf{Constant Bottom Area} & \textbf{FEA value} \\ \hline
-$k_y$ & 1283 N/m & 8966 N/m & 16213 N/m & 4233 N/m \\  \hline
-$f_y$ & 0.34 Hz & 0.84 Hz & 1.1 Hz & 0.58 Hz\\ \hline
+$k_y$ & 1283 N/m & 8966 N/m & 16213 N/m & 8159 N/m \\  \hline
+$f_y$ & 0.34 Hz & 0.61 Hz & 1.1 Hz & 0.58 Hz\\ \hline
 \end{tabular}
 \end{center}
 \end{table}
 
-Table \ref{table:ky_values} shows the calculated spring constant values and natural frequencies in the $y$-direction for the turbine parameters.  The constant top area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the top of the tower.  The constant bottom area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the bottom of the tower.  The FEA values are derived in Tom Gwon's analysis \cite{Gwon_paper}, although it is unclear whether these values apply for the $y$ or $x$ direction.  The tapered beam calculation is performed in MATLAB using the following code (with turbine parameters listed in Table \ref{t:MATLAB_ky_variables}):
+Table \ref{t:ky_values} shows the calculated spring constant values and natural frequencies in the $y$-direction for the turbine parameters.  The constant top area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the top of the tower.  The constant bottom area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the bottom of the tower.  The FEA values are derived in Tom Gwon's analysis \cite{Gwon_paper}, although it is unclear whether these values apply for the $y$ or $x$ direction.  The tapered beam calculation is performed in MATLAB using the following code (with turbine parameters listed in Table \ref{t:MATLAB_ky_variables}):
 
 \begin{lstlisting}
 z = linspace(0, z_0, 1000); % [m] Create the vector of z values
@@ -303,8 +303,6 @@ The intermediate variables from the MATLAB calculation are shown in Figure  \ref
 \subsection{Determining Effective Mass}
 The cantilever beam (Figure \ref{fig:cantilever_beam}) can be simplified to a massless beam with all of the mass concentrated at the end of the beam.
 
-\todo{Redo this derivation assuming $I$ is a function of $x$: $I(x)$}
-
 % Figure for the cantilever beam
 \begin{figure}
 	\centering
@@ -314,37 +312,49 @@ The cantilever beam (Figure \ref{fig:cantilever_beam}) can be simplified to a ma
 	\label{fig:cantilever_beam}
 \end{figure}
 
-The total potential energy, $P$, in the beam is \cite{cantilever_beam_ref}:
+As shown in Figure \ref{fig:ky_MATLAB_plot}, the deflection at any point on the beam, $y(z)$ can be calculated numerically.  The normalized deflection, $y_n(z)$ can be calculated by dividing this equation by the maximum deflection at the free end, $z_0$ (Equation \ref{eq:normalized_deflection}).  This allows the deflection equation to be rewritten in terms of the normalized deflection (Equation \ref{eq:deflection_w_normalization}).
 \begin{align}
-	P&=\frac{EI}{2} \int_{0}^{L} \left(\frac{d^2y}{dx^2}\right)^2dx \nonumber \\
-	 &=\frac{1}{64}\pi^4 \left[\frac{EI}{L^3}\right] y_0^2 \label{eq:potential_energy}
+	y_n(z) &= \frac{y(z)}{y(z_0)} \label{eq:normalized_deflection} \\
+	y(z) &= y_n(z) \cdot y(z_0) = y_n(z) \cdot y_{max} \label{eq:deflection_w_normalization} \\
 \end{align}
 
-The total kinetic energy, $T$, in the beam is:
+The velocity of the beam at point $z$ can be calculated by taking the derivative of the deflection equation (Equation \ref{eq:deflection_w_normalization}).  The velocity of the beam is shown in Equation \ref{eq:beam_velocity}.
+\begin{equation} \label{eq:beam_velocity}
+	v(z) = y_n(z) \cdot v_{max}
+\end{equation}
+
+The kinetic energy, $dE_k$, of the beam at a single point, $x$, can be calculated as shown in Equation \ref{eq:beam_ke}.
 \begin{align}
-	T&=\frac{1}{2} \rho_L \omega_n^2 \int_{0}^{L} y^2dx \nonumber \\
-	 &=\frac{1}{4} \rho \omega_n^2 y_0^2 L \left(3-\frac{8}{\pi}\right) \label{eq:kinetic_energy}
+	dE_k &= \frac{1}{2} m v^2 \nonumber \\
+	dE_k &= \frac{1}{2} \left(\rho A(z) dz\right) \left(y_n(z) v_{max}\right)^2  \label{eq:beam_ke}
 \end{align}
 
-Equating Equation \ref{eq:potential_energy} and Equation \ref{eq:kinetic_energy} results in the following equation for natural frequency $f_n \units{Hz}$:
-\begin{equation}
-	f_n = \frac{\pi}{8 L^{2}} \sqrt{\frac{E I}{\rho \left(3 - \frac{8}{\pi}\right)}}
+Using Equation \ref{eq:beam_ke}, the total kinetic energy of the beam can be found by integrating $dE_k$, as shown in Equation \ref{eq:beam_ke_total}.
+\begin{align}
+	E_k &= \int_{0}^{z_0}{dE_k} \\
+	E_k &= \int_{0}^{z_0}{\left(\frac{1}{2} \rho A(z) \left(y_n(z) v_{max}\right)^2 dz \right)} \\
+	E_k &= \frac{1}{2} \rho v_{max}^2 \int_{0}^{z_0}{\left(A(z) y_n^2(z) dz \right)} \label{eq:beam_ke_total}
+\end{align}
+
+The effective mass of the beam can be calculated by examining Equation \ref{eq:beam_ke_total} and comparing to the standard format, $E=\frac{1}{2}mv^2$.  Equation \ref{eq:effective_mass_integral} shows the resulting effective mass.
+\begin{equation} \label{eq:effective_mass_integral}
+	m_{eff} = \rho \int_{0}^{z_0}{\left(A(z) y_n^2(z) dz \right)}
 \end{equation}
 
-The stiffness at the free end of a cantilever beam is:
-\begin{equation}
-	k = \frac{3 E}{L^{3}} I \label{eq:beam_stiffness}
+The deflection from Equation \ref{eq:deflection_equation_sum} can be substituted into Equation \ref{eq:effective_mass_integral}.  Additionally, the integral can be converted to a numerical sum as shown in Equation \ref{eq:m_eff_sum}.
+\begin{equation} \label{eq:m_eff_sum}
+	m_{eff} = \rho \sum_{k=0}^{p}{\left(A(z_p) y_n^2(z_p) \Delta z \right)}
 \end{equation}
 
-The natural frequency of a beam is a function of the stiffness and effective mass:
-\begin{equation}
-	\omega_n = 2 \pi f_n = \sqrt{k/m_{eff}}
-\end{equation}
+Numerically calculating $m_{eff}$ using MATLAB, results in a value of $m_{eff}=140 \units{kg}$.
 
-Simplifying the previous few equations results in the following equation for the effective mass at the end of a mass-less beam:
-\begin{equation}
-	m_{eff} = \frac{48 L}{\pi^{4}} \rho \left(3 - \frac{8}{\pi}\right)
-\end{equation}
+The total effective mass at the top of the tower, $m_{eff,total}$ is as follows:
+\begin{align}
+	m_{eff,total} &= m_{nacelle} + m_{eff} \\
+	m_{eff,total} &= 474 \units{kg} + 140 \units{kg} = 614 \units{kg} \label{eq:total_effective_mass}
+\end{align}
+
+The mass in Equation \ref{eq:total_effective_mass} is the lumped sum used to calculate the  parameters in Table \ref{t:ky_values} and create the turbine tower model.
 
 \subsection{Developing State Space Equations}
 Vibrations in the $x$ and $y$ directions can be split up into 2 independent 2nd order differential equations:

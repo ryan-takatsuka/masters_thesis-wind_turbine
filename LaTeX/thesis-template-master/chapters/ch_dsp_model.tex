@@ -12,7 +12,7 @@ The force due to an imbalance is given in Equation \ref{eq:initial_force}.  It i
 	\centering
 	\includegraphics[scale=0.6]{LIA_block_diagram}
 	\decoRule
-	\caption{A block diagram showing the lock-in amplifier and the turbine tower simulation.}
+	\caption{A block diagram showing the lock-in amplifier and the turbine tower simulation.  This figure was created with Draw.io.}
 	\label{fig:LIA_block_diagram}
 \end{figure}
 
@@ -33,7 +33,7 @@ The first method for processing the acceleration data utilizes lock-in amplifier
 	\centering
 	\includegraphics[scale=0.6]{simulated_sensor_reading}
 	\decoRule
-	\caption{The simulated displacement for a rotor imbalance at 230 RPM.  The imbalance mass is placed at the end of the blade, which causes accelerations and displacements at the top of the tower.}
+	\caption{The simulated displacement for a rotor imbalance at 230 RPM.  The imbalance mass is placed at the end of the blade, which causes accelerations and displacements at the top of the tower.  This figure was created with Python.}
 	\label{fig:simulated_sensor_reading}
 \end{figure}
 
@@ -41,12 +41,12 @@ The first method for processing the acceleration data utilizes lock-in amplifier
 	\centering
 	\includegraphics[scale=0.6]{sim_FFT_200RPM}
 	\decoRule
-	\caption{This figure shows the simulated displacement data in the frequency domain.  The rotor frequency is 230 RPM in this simulation}
+	\caption{This figure shows the simulated displacement data in the frequency domain.  The rotor frequency is 230 RPM in this simulation. This figure was created with Python.}
 	\label{fig:sim_FFT_200RPM}
 \end{figure}
 
 \subsection{DFT review}
-A Discrete Fourier Transform (DFT) converts a signal from the time domain to the frequency domain.  Typically, this is performed with using the Fast Fourier Transform (FFT) algorithm, which is an efficient method for calculating the DFT.  The DFT is defined by the formula in Equation \ref{eq:dft_definition} \cite{wiki_DFT}.
+A Discrete Fourier Transform (DFT) converts a signal from the time domain to the frequency domain.  Typically, this is performed with using the Fast Fourier Transform (FFT) algorithm, which is an efficient method for calculating the DFT.  The DFT is defined by the formula in Equation \ref{eq:dft_definition} \cite{winograd1976computing}.
 \begin{equation} \label{eq:dft_definition}
 	X_k = \sum_{n=0}^{N-1}{x_n \cdot e^{-\frac{i 2 \pi}{N} k n}}
 \end{equation}
@@ -76,7 +76,7 @@ Another way of looking at the DFT (from the form in Equation \ref{eq:dft_vector}
 
 \subsection{Lock-In Amplifier}
 
-A lock-in amplifier is used to measure AC signals in particularly noisy environments (Figure \ref{fig:LIA}).  It works by multiplying the noisy signal by a reference signal created by an internal oscillator.  By using 2 reference signals out of phase, the real and imaginary parts of the signal at the specified carrier frequency can be calculated\cite{LIA_document}.  Let's say there is an unknown sinusoidal signal with high frequency noise ($\omega_2 >> \omega_1$):
+A lock-in amplifier is used to measure AC signals in particularly noisy environments (Figure \ref{fig:LIA}).  It works by multiplying the noisy signal by a reference signal created by an internal oscillator.  By using 2 reference signals out of phase, the real and imaginary parts of the signal at the specified carrier frequency can be calculated \cite{LIA_applications}.  Let's say there is an unknown sinusoidal signal with high frequency noise ($\omega_2 >> \omega_1$):
 \begin{equation}
 	y = A \,\sin{(\omega_1 \, t)} + B\,\sin{(\omega_2 \, t)}
 \end{equation}
@@ -104,7 +104,7 @@ where $X$ is the noisy AC signal and $Y$ is the signal that is fed into a filter
 	\centering
 	\includegraphics[scale=0.7]{LIA}
 	\decoRule
-	\caption{A block diagram showing the details of a lock-in amplifier \cite{LIA_fig}.  This figure was created with Draw.io.}
+	\caption{A block diagram showing the details of a lock-in amplifier.  This figure was created with Draw.io.}
 	\label{fig:LIA}
 \end{figure}
 
@@ -116,7 +116,7 @@ Lock-in amplifiers are typically used when the frequency is relatively stable an
 	\centering
 	\includegraphics[scale=0.7]{200_RPM_LIA_output_sim}
 	\decoRule
-	\caption{The output of the lock-in amplifier from the simulated data shown in Figure \ref{fig:simulated_sensor_reading}}
+	\caption{The output of the lock-in amplifier from the simulated data shown in Figure \ref{fig:simulated_sensor_reading}.  This figure was created with Python.}
 	\label{fig:200_RPM_LIA_output_sim}
 \end{figure}
 
@@ -207,7 +207,7 @@ One of the problems with a phase-locked loop is the PID controller gains depend 
 	\centering
 	\includegraphics[scale=0.5]{PLL_simulation}
 	\decoRule
-	\caption{The output of the PLL  when detecting frequency from the data shown in Figure \ref{fig:simulated_sensor_reading}.  The frequency of the input data oscillates from 190 RPM to 210 RPM to simulate a real turbine controller that may oscillate between frequencies.}
+	\caption{The output of the PLL  when detecting frequency from the data shown in Figure \ref{fig:simulated_sensor_reading}.  The frequency of the input data oscillates from 190 RPM to 210 RPM to simulate a real turbine controller that may oscillate between frequencies.  This figure was created with MATLAB.}
 	\label{fig:PLL_simulation}
 \end{figure}
 
@@ -219,6 +219,31 @@ One of the problems with a phase-locked loop is the PID controller gains depend 
 	\label{fig:envelope_detector}
 \end{figure}
 
+\subsection{Windowed FFT}
+One problem with standard FFTs is that the frequency content can get spread across all of the bins if the signal contains frequencies that do not fall exactly into any one bin.  For example, a 1024-point FFT of a signal sampled at 128 Hz will have bins at each integer frequency value (0,1,2,3, ..., 64 Hz).  If the measured signal contains a signal at 10.l Hz, the frequency spectrum will spread this component across all of the bins.  This is shown by the standard FFT in Figure \ref{fig:MATLAB_fft_window}.  In order to prevent this from happening, a windowing filter can be applied to the raw signal before the FFT is calculated.  These windowing filters are weighted averages of the signal (rather than a uniform average that is performed by the standard FFT).  Two of the most common windowing filters are the Blackman and Hamming windows.  For FFT analysis, the Blackman filter is preferable because it has a narrower peak and rejects some of the higher frequencies more than the Hamming window.  Figure \ref{fig:MATLAB_fft_window} shows the result of a standard FFT and a windowed FFT applied to the same signal.
+
+To apply a windowed FFT, the coefficients ($\vec{w}$) of the Blackman (or other windowing function) function must be created.  The Blackman coefficients can be created analytically in Equation \ref{eq:blackman} \cite{MATLAB_blackman}.  In this equation, $N$ is the length of the windowing filter (which is equal to the number of points in the FFT).
+\begin{equation} \label{eq:blackman}
+	\vec{w}(n) = 0.42 - 0.5 \cos{\left(\frac{2 \pi n}{N-1}\right)} + 0.08 \cos{\left(\frac{4 \pi n}{N-1}\right)}, \,\,\,\,\, 0 \leq n \leq (N-1)
+\end{equation}
+
+The Blackman coefficients are then element-wise multiplied by the signal ($\vec{y}$) before the FFT is calculated as shown in Equation \ref{eq:apply_window_filter} ($\odot$ is the element-wise multiplication operator).
+\begin{align}
+	\vec{y}_{window} &= \vec{y} \odot \vec{w} \\
+	m_{fft} &= \texttt{FFT}\left(\vec{y}_{window} \right) \label{eq:apply_window_filter}
+\end{align}
+
+
+\begin{figure}
+	\centering
+	\includegraphics[scale=0.7]{MATLAB_fft_window}
+	\decoRule
+	\caption{This figure shows a standard FFT and a windowed FFT with a sampling rate of 128 Hz.  The FFT length is 1024, and the windowing filter is a Blackman filter.  This figure was created with MATLAB.}
+	\label{fig:MATLAB_fft_window}
+\end{figure}
+
+
+
 \subsection{Zoom FFT}
 A very powerful method for reducing the computational cost of the FFT calculation is to use a Zoom FFT.  If the imbalance detection device contains a low-power processor, it will be able to run for a long time off of a battery.  This also means that the processor could be much slower than an alternative high-power processor.  A Zoom FFT will significantly reduce the computational load on the processor, allowing the low-power processor to sufficiently calculate the frequency spectrum of the input signal.
 
@@ -228,9 +253,9 @@ If the frequency of the rotor is not precisely known, then a lock-in amplifier i
 
 To efficiently calculate the Fourier transform, the DFT matrix can be factored and the complexity reduced from $O(n^2)$ to $O(n \log{n})$.  This efficient algorithm is called the fast Fourier transform (FFT).  Despite being much more efficient than the standard DFT, a generic FFT is still inefficient for this application because most of the frequency data occurs outside the bandwidth of interest and is thrown away.  This can be fixed by applying a zoom FFT algorithm.
 
-The zoom FFT consists of 4 main steps.  First the data is convoluted with a reference signal in the time domain (translated in the frequency domain) to shift a center frequency, $F_c$, to 0 Hz.  Second, a lowpass filter prevents aliasing when sampling at a lower sample rate.  An infinite impulse response (IIR) filter can be used for simplicity; however, the phase information of the signal is lost.  To solve this, a finite impulse response (FIR) filter can be used.  FIR filters are more complicated but most have a flat phase response, ensuring the filter output retains the original phase information.  Typically, discrete FIR filters are applied in various 2-stage filters for simplicity.  Third, the data is decimated (re-sampled at a lower rate). Finally, the decimated data is passed through a FFT algorithm that produces a frequency spectrum in the specified bandwidth.  Since the frequency range of the zoom FFT is much smaller, the resolution can be much higher for a FFT length.  Alternatively, a much smaller FFT length can be used to produce the same resolution.
+The zoom FFT consists of 4 main steps.  First the data is convoluted with a reference signal in the time domain (translated in the frequency domain) to shift a center frequency, $F_c$, to 0 Hz.  Second, a lowpass filter prevents aliasing when sampling at a lower sample rate.  An infinite impulse response (IIR) filter can be used for simplicity; however, the phase information of the signal is lost.  To solve this, a finite impulse response (FIR) filter can be used.  FIR filters are more complicated but most have a flat phase response, ensuring the filter output retains the original phase information.  Third, the data is decimated (re-sampled at a lower rate). Finally, the decimated data is passed through a FFT algorithm that produces a frequency spectrum in the specified bandwidth.  Since the frequency range of the zoom FFT is much smaller, the resolution can be much higher for a FFT length.  Alternatively, a much smaller FFT length can be used to produce the same resolution.
 
-For a microcontroller sampling the acceleration of the turbine tower at 100 Hz, Figure \ref{fig:zoom_fft_diagram} shows a block diagram of a zoom FFT implementation for detecting an imbalance.  Point A represents the raw input signal, which is the acceleration of the tower sampled at $F_s=100$ Hz in this case.  The frequency translation is performed by mixing the input signal with a reference signal at $F_c$.  The goal of a Zoom FFT is to reduce the amount of data by decimating the original signal and reducing the sampling rate.  Just performing a sampling rate reduction would result in aliasing, so there needs to be a digital anti-aliasing filter that prepares the signal for the decimation step.  This digital filter is a low pass FIR filter that produces a filtered signal at Point C, which can then be decimated without aliasing to achieve Point D.  This new set of data is sampled at $F_{s,new}=\frac{F_s}{D}$, which means the frequency spectrum spans a much smaller range.
+For a microcontroller sampling the acceleration of the turbine tower at 128 Hz, Figure \ref{fig:zoom_fft_diagram} shows a block diagram of a zoom FFT implementation for detecting an imbalance.  Point A represents the raw input signal, which is the acceleration of the tower sampled at $F_s=128$ Hz in this case.  The frequency translation is performed by mixing the input signal with a reference signal at $F_c$.  The goal of a Zoom FFT is to reduce the amount of data by decimating the original signal and reducing the sampling rate.  Just performing a sampling rate reduction would result in aliasing, so there needs to be a digital anti-aliasing filter that prepares the signal for the decimation step.  This digital filter is a low pass FIR filter that produces a filtered signal at Point C, which can then be decimated without aliasing to achieve Point D.  This new set of data is sampled at $F_{s,new}=\frac{F_s}{D}$, which means the frequency spectrum spans a much smaller range.
 
 Zoom FFTs \cite{zoom_fft_ref} contain the following parameters:
 
@@ -365,11 +390,13 @@ Figure \ref{fig:MATLAB_zoom_fft_ex} shows the results of a MATLAB simulation usi
 \end{figure}
 
 \subsubsection{Estimating processor performance}
-Comparing the computational time of different algorithms is difficult because the dominant factor is usually memory access, rather than actual floating-point operations \cite{wiki_fft}.  Evaluating the computational cost due to memory access patterns in complicated, so this analysis will only consider the computational cost of the floating-point operations (FLOPs).  To minimize the cost from memory access patterns, the algorithms will be vectorized and converted to matrix form.  Most processors have highly optimized matrix operation functions, which should hopefully make arithmetic the dominant factor when determining the computational cost.
+Comparing the computational time of different algorithms is difficult because the dominant factor is usually memory access, rather than actual floating-point operations \cite{nussbaumer2012fast}.  Evaluating the computational cost due to memory access patterns in complicated, so this analysis will only consider the computational cost of the floating-point operations (FLOPs).  To minimize the cost from memory access patterns, the algorithms will be vectorized and converted to matrix form.  Most processors have highly optimized matrix operation functions, which should hopefully make arithmetic the dominant factor when determining the computational cost.
 
 For this analysis, a STM32 processor is used as the baseline for estimating cycle counts because it is the unit used to prototype the LifeLine data acquisition device that collects experimental acceleration data from the turbine.  The STM32 has its own single precision register set to handle floating-point operations with hardware (rather than using compiled C libraries to perform the floating-point operations in many complex steps).  The floating-point unit (FPU) in the STM32 offers arithmetic instructions for the operations listed in Table \ref{t:stm32_cycles} \cite{stm32_floating_point}.
 
 Many FPUs (like the one in Table \ref{t:stm32_cycles}), have multiply/accumulate arithmetic instructions, which means they can perform a multiplication and addition all in one step.  Additionally, division operations are much more expensive than multiplication operations and should be avoided as much as possible when designing algorithms.
+
+Using the estimated floating point performance, the estimated clock cycles are shown in Table \ref{t:estimated_cycles}.  These are very rough estimates of the computational power required to perform each of the 3 FFT techniques.  The number of clock cycles for the FFT calculation is estimated from the Cooley Tukey algorithm \cite{puschel2007algebraic}.   The windowed FFT (shown in Figure \ref{fig:MATLAB_fft_window}) is not significantly more computationally expensive than a standard FFT, but performs much better.  The Zoom FFT analyzed in this table is the same design from Table \ref{t:zoom_fft_parameters} and Figure \ref{fig:MATLAB_zoom_fft_ex}.
 
 \begin{table}[]
 \centering
@@ -388,6 +415,22 @@ Multiply and accumulate/subtract & 3 \\ \hline
 Divide & 14 \\ \hline
 Square Root & 14 \\ \hline
 Exponential & 20* \\ \hline
+\end{tabular}
+\end{table}
+
+\begin{table}[]
+\centering
+\caption{Estimated cycle counts for various FFT techniques.}
+\label{t:estimated_cycles}
+\vspace*{0.2in}
+\begin{tabular}{l|c|c|c|c|c|}
+\cline{2-6}
+                                                                    & \multicolumn{2}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{\begin{tabular}[c]{@{}c@{}}Number of \\ Operations\end{tabular}}}                    & \multicolumn{3}{c|}{\cellcolor[HTML]{C0C0C0}\textbf{\begin{tabular}[c]{@{}c@{}}Number of Clock \\ Cycles {[}kCycles{]}\end{tabular}}} \\ \hline
+\rowcolor[HTML]{C0C0C0} 
+\multicolumn{1}{|l|}{\cellcolor[HTML]{C0C0C0}\textbf{Method}}       & \textbf{\begin{tabular}[c]{@{}c@{}}Multiply/\\ Accumulate\end{tabular}} & \textbf{\begin{tabular}[c]{@{}c@{}}FFT \\ Length\end{tabular}} & \textbf{Multiply}                             & \textbf{FFT}                             & \textbf{Total}                            \\ \hline
+\multicolumn{1}{|l|}{\cellcolor[HTML]{C0C0C0}\textbf{Standard FFT}} & 0                                                                       & 1024                                                           & 0                                             & 435.2                                    & 435.2                                      \\ \hline
+\multicolumn{1}{|l|}{\cellcolor[HTML]{C0C0C0}\textbf{Windowed FFT}} & 1024                                                                    & 1024                                                           & 3.072                                         & 435.2                                    & 438.3                                      \\ \hline
+\multicolumn{1}{|l|}{\cellcolor[HTML]{C0C0C0}\textbf{Zoom FFT}}     & 512                                                                     & 128                                                            & 1.536                                         & 38.1                                     & 39.6                                       \\ \hline
 \end{tabular}
 \end{table}
 

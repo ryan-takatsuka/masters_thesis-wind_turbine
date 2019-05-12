@@ -19,18 +19,13 @@ If all 256 FFT points are used as input features, logistic regression performs v
 \section{Next Steps}
 The immediate next step is to collect more data.  Machine learning algorithms require lots of training data to optimize the internal parameters.  A good reference is to have about 10 times the amount of training data as features or trainable parameters.  This project used about 100 data sets for 256 features, so ideally, there would be at least 2560 data sets to train the models.
 
-The turbine tower model can be expanded to include a more complicated forced input or a more complicated mechanical model.  If the model is accurate enough, it can be used to simulate balances and imbalances and create training data for the machine learning algorithm.  Additionally, this would allow the machine learning algorithm to be trained on datasets that represent turbine failures and could be too dangerous to experimentally collect.
+The turbine tower model can be expanded to include a more complicated forced input or a more complicated mechanical model.  If the model is accurate enough, it can be used to simulate balances and imbalances and create training data for the machine learning algorithm.  Additionally, this would allow the machine learning algorithm to be trained on datasets that represent turbine failures and could be too dangerous or costly to experimentally collect.
 
 In addition to collecting more raw data, it would be best to collect data over a variety of operating conditions.  For example, running the turbine for 20 hours and collecting consecutive data won't account for day-to-day fluctuations in wind speed, weather, and temperature.  These new data sets might show the need to new features to be added, such temperature, wind speed, or acceleration direction as well as magnitude.
 
 After achieving a successful classification model, it might be desirable to reduce the power usage of the detection device.  This would most likely involve switching to a low power processor and reducing the amount of calculations that can be performed.  This would require optimized versions of frequency transformations, such as Zoom FFTs or lock-in amplifiers.
 
 Finally, a deeper investigation into machine learning classification algorithms can be done to choose the ideal model for this application.  For example, it might be useful to use an unsupervised algorithm that can create its own groups for the data, or maybe a neural network with a more complicated architecture can be used to better fit the data.
-
-
-
-
-\todo{fix bibliography}
 
 
 
