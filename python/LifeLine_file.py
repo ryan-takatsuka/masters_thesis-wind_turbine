@@ -22,7 +22,7 @@ class LifeLine_file:
 
 	'''
 
-	def __init__ (self, filename, is_balanced=True, low_cut=50, idx_range=[0,100]):
+	def __init__ (self, filename, is_balanced=True, low_cut=50, idx_range=None):
 		'''
 		Initialize the LifeLine_file object.
 
@@ -56,7 +56,8 @@ class LifeLine_file:
 			with open (self.file_name, mode = 'r') as big_file:
 				print ('File opened.')
 				self.DFT_list = split_dft.split_up (big_file, dir_name, plots = False)
-				self.DFT_list = self.DFT_list[idx_range[0]:idx_range[1]]
+				if idx_range is not None:
+					self.DFT_list = self.DFT_list[idx_range[0]:idx_range[1]]
 				# pdb.set_trace()
 				print ('Size of DFT list: {:d} items'.format (len(self.DFT_list)))
 
