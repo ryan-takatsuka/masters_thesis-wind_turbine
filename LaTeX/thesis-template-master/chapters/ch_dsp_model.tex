@@ -126,7 +126,7 @@ The filter choice is very important for a lock-in amplifier.  Some of the common
 
 The IIR filter is shown in Figure \ref{fig:freq_mag_IIR_filter}, which significantly smooths the data, but at the cost of some time-domain distortion.  An IIR filter uses past states in the output calculation, meaning an impulse input signal will affect the filter output forever (\textit{infinite} impulse response filter).  This results in a transfer function as follows:
 
-\begin{equation}
+\begin{equation} \label{eq:IIR_tf}
 	T(z) = \frac{b(z)}{a(z)}
 \end{equation}
 

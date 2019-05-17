@@ -117,10 +117,10 @@ The tower model has a different spring constant for the $x$ and $y$ directions. 
 %	Deriving the y-direction spring constant
 %----------------------------------------------------------------------------------------
 \subsubsection{Mathematical derivation of the $y$-direction spring constant, $K_y$}
-Assuming the tower acts like a cantilever beam in this direction with a concentrated force at the end of the beam, the moment, $M_x(y)$ can be expressed as:
+Assuming the tower acts like a cantilever beam in this direction with a concentrated force at the end of the beam, the moment, $M_x(z)$ can be expressed as:
 
 \begin{equation} \label{eq:moment}
-	M_x(y) = F_{y}\,z-F_{y}\,z_{0}
+	M_x(z) = F_{y}\,z-F_{y}\,z_{0}
 \end{equation}
 
 Because the beam is linearly tapered, the diameter, $d$, can be written as a function of tower height, $z_0$.
@@ -212,7 +212,7 @@ The applied force, $F_y$, in the moment equation (Equation \ref{eq:moment}) can 
 The integral in Equation \ref{eq:theta_integral_exact} can be approximated by a sum of $n$ elements and calculated numerically.
 
 \begin{equation} \label{eq:theta_integral_approx}
-	\theta(z) = \frac{F_y}{E} \sum_{i=0}^{n}{\frac{z_0-z_i}{I(z_i)}\,\Delta z_i}
+	\theta_n(z) = \frac{F_y}{E} \sum_{i=0}^{n}{\frac{z_0-z_i}{I(z_i)}\,\Delta z_i}
 \end{equation}
 
 Equation \ref{eq:theta_integral_approx} is a much simpler method for calculating the beam slope compared to the analytic solution shown in Equation \ref{eq:theta_analytic}.  The deflection of the tower, $y_d$, can be calculated by integrating the slope equation.
