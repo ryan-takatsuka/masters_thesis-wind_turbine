@@ -243,12 +243,12 @@ From Equation \ref{eq:Fy_numerical}, is can be seen that the spring constant is:
 \begin{table}[]
 \caption{Calculated spring constant and natural frequency for the $y$-direction vibration.} \label{t:ky_values}
 \begin{center}
-\begin{tabular}{|m{1in}|m{1in}|m{1in}|m{1in}|m{1in}|}
+\begin{tabular}{|p{1in}|p{1.5in}|p{1in}|p{1.3in}|}
 \rowcolor[HTML]{EFEFEF} 
 \hline
-\textbf{Parameter} & \textbf{Constant Top Area} & \textbf{Tapered Beam} & \textbf{Constant Bottom Area} & \textbf{FEA value} \\ \hline
-$k_y$ & 1283 N/m & 8966 N/m & 16213 N/m & 8159 N/m \\  \hline
-$f_y$ & 0.34 Hz & 0.61 Hz & 1.1 Hz & 0.58 Hz\\ \hline
+\textbf{Parameter} & \textbf{Tapered Beam Model (This paper)} & \textbf{FEA value (Gwon \cite{Gwon_paper})} & \textbf{Modal Analysis (Katsanis \cite{george2013transient})} \\ \hline
+$f_x$ & 0.80 Hz & 0.83 Hz & 0.81 Hz\\ \hline
+$f_y$ & 0.59 Hz & 0.58 Hz & 0.59 Hz\\ \hline
 \end{tabular}
 \end{center}
 \end{table}
@@ -351,7 +351,7 @@ Numerically calculating $m_{eff}$ using MATLAB, results in a value of $m_{eff}=1
 The total effective mass at the top of the tower, $m_{eff,total}$ is as follows:
 \begin{align}
 	m_{eff,total} &= m_{nacelle} + m_{eff} \\
-	m_{eff,total} &= 474 \units{kg} + 140 \units{kg} = 614 \units{kg} \label{eq:total_effective_mass}
+	m_{eff,total} &= 209 \units{kg} + 170 \units{kg} = 379 \units{kg} \label{eq:total_effective_mass}
 \end{align}
 
 The mass in Equation \ref{eq:total_effective_mass} is the lumped sum used to calculate the  parameters in Table \ref{t:ky_values} and create the turbine tower model.

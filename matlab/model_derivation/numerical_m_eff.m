@@ -7,14 +7,16 @@ close all
 clc
 
 %% Constants
-z_0 = 70 * u.ft;
-d_t = 8.7 * u.in;
-d_b = 20 * u.in;
-t = 0.2 * u.in;
-E = 30e6 * u.psi;
-F = 1 * u.N;
-m_nacelle = 474 * u.kg;
-rho = 8050 * u.kg/(u.m^3);
+z_0 = 70 * u.ft; % The height of the tower
+d_t = 6 * u.in; % The diameter of the top of the tower 8.7
+d_b = 13.957 * u.in; % The diameter of the base of the tower 20
+t = 0.375 * u.in; % The thickness of the tower 0.2
+E = 29.2e6 * u.psi; % The modulus of elasticity
+F = 1 * u.N; % The normalized force
+m_nacelle = 474 * u.lb; % mass of the nacelle
+rho0 = 8050 * u.kg/(u.m^3); % density of the tower
+rho_weight = 0.284 * u.lbf / u.in^3; % weight density
+rho = rho_weight / (32 * u.ft/u.s^2); % mass density
 
 % Create the vector for the tower height
 z = linspace(0*u.ft, z_0, 1000);
@@ -58,7 +60,7 @@ A = (pi*(d/2).^2) - (pi*((d-2*t)/2).^2);
 y_n = y / max(abs(y));
 
 % Calculate the effective mass at the end of the tower
-m_eff = trapz(z, rho*A.*(y_n.^2));
+m_eff = cumtrapz(z, rho*A.*(y_n.^2));
 
 %% Extract values from data and remove units
 z = z ./ u.m;
@@ -97,15 +99,23 @@ xlabel('Height, z [m]')
 ylabel('y/F [m/N]')
 grid on
 
+figure
+plot(z, m_eff ./ u.kg, 'k', 'LineWidth', 2)
+title('Effective mass')
+xlabel('Height, z [m]')
+ylabel('Mass [kg]')
+grid on
+
 
 % Calculate the total mass
-m_total = m_nacelle + m_eff;
+m_total = m_nacelle + m_eff(end)
+m_tower = trapz(z, A)*rho
 
 % Print out the spring constant 
 ky(end)
 
 % Calculate the natural frequency
-wn = sqrt(ky(end) / m_total)
+wn = sqrt(ky(end) / m_total);
 fn = wn/2/pi
 
 
