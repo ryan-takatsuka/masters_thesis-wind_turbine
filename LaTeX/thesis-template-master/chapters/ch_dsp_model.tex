@@ -6,7 +6,7 @@
 \section{Model Block Diagram}
 The blade imbalance detection is simulated using MATLAB/Simulink.  Figure \ref{fig:LIA_block_diagram} shows the block diagram for a method of imbalance detection where the rotor frequency is known.  This is an accurate method, but requires the information from an encoder on the shaft or an accurate phase-locked loop (PLL) controller.  
 
-The force due to an imbalance is given in Equation \ref{eq:initial_force}.  It is a periodic function with the same frequency as the rotor and is proportional to the effective imbalance mass, $m$.  The variable forcing function is the input for the lumped parameter turbine tower state space model. These vibrations are then read by an acceleration sensor with a sampling rate of 100 Hz.  The frequency of interest is demodulated using a lock-in amplifier or DFT, which should result in the acceleration from only the imbalance.  The acceleration at the top of the tower should have higher intensity vibrations at the rotor frequency when there is an imbalance in the blades (causing an eccentric mass).
+The force due to an imbalance is given in Equation \ref{eq:initial_force}.  It is a periodic function with the same frequency as the rotor and is proportional to the effective imbalance mass, $m$.  The variable forcing function is the input for the lumped parameter turbine tower state space model. These vibrations are then read by an acceleration sensor with a sampling rate of 100 Hz.  The frequency of interest is demodulated using a lock-in amplifier or DFT, which should result in the acceleration from only the imbalance.  The acceleration at the top of the tower should have higher amplitude vibrations at the rotor frequency when there is an imbalance in the blades (causing an eccentric mass).
 
 \begin{figure}
 	\centering
@@ -27,7 +27,7 @@ The simulation and turbine tower state space model produce displacements shown i
 	y = C_1 \sin{(\omega_n t + \phi_1)} + C_2 \sin{(\omega_{drive} t + \phi_2)}
 \end{equation}
 
-The first method for processing the acceleration data utilizes lock-in amplifier to translate the data in the frequency domain.  This new data, with the rotor frequency shifted to 0 Hz, is filtered and results in a DC acceleration that should be proportional to the imbalance mass.  The second method utilizes a zoom FFT, which provides higher resolution than a typical FFT in the bandwidth of interest.  The third method uses a Goertzel algorithm to calculate the bin of interest in the DFT.
+The first method for processing the acceleration data utilizes a lock-in amplifier to translate the data in the frequency domain.  This new data, with the rotor frequency shifted to 0 Hz, is filtered and results in a DC acceleration that should be proportional to the imbalance mass.  The second method utilizes a zoom FFT, which provides higher resolution than a typical FFT in the bandwidth of interest.  The third method uses a Goertzel algorithm to calculate the bin of interest in the DFT.
 
 \begin{figure}
 	\centering
@@ -76,7 +76,7 @@ Another way of looking at the DFT (from the form in Equation \ref{eq:dft_vector}
 
 \subsection{Lock-In Amplifier}
 
-A lock-in amplifier is used to measure AC signals in particularly noisy environments (Figure \ref{fig:LIA}).  It works by multiplying the noisy signal by a reference signal created by an internal oscillator.  By using 2 reference signals out of phase, the real and imaginary parts of the signal at the specified carrier frequency can be calculated \cite{LIA_applications}.  Let's say there is an unknown sinusoidal signal with high frequency noise ($\omega_2 >> \omega_1$):
+A lock-in amplifier is used to measure AC signals in particularly noisy environments (Figure \ref{fig:LIA}).  It works by multiplying the noisy signal by a reference signal created by an internal oscillator.  By using two reference signals out of phase, the real and imaginary parts of the signal at the specified carrier frequency can be calculated \cite{LIA_applications}.  Let's say there is an unknown sinusoidal signal with high frequency noise ($\omega_2 >> \omega_1$):
 \begin{equation}
 	y = A \,\sin{(\omega_1 \, t)} + B\,\sin{(\omega_2 \, t)}
 \end{equation}
@@ -110,7 +110,7 @@ where $X$ is the noisy AC signal and $Y$ is the signal that is fed into a filter
 
 Using the lock in amplifier tuned to a constant frequency, Figure \ref{fig:200_RPM_LIA_output_sim} shows the resulting output.  This shows that an imbalance can be detected by measuring the output of a lock-in amplifier that is tuned to the frequency of the turbine rotor.  When the acceleration data is treated as an AM signal, with the carrier frequency equal to the rotor frequency, the acceleration due to the rotation of the blades can be identified.  This acceleration is directly related to the mass at the end of the blade, and should be a constant value (as long as the rotor frequency is accurately known).
 
-Lock-in amplifiers are typically used when the frequency is relatively stable and the signal-to-noise ratio is low.  For this application, the rotor frequency can change, which may not give the LIA filters enough time to settle.  If there is a very stable and accurate rotor speed controller, this method would be ideal because it extracts the signal of interest despite the high noise and distortions in the measurement.
+Lock-in amplifiers (LIAs) are typically used when the frequency is relatively stable and the signal-to-noise ratio is low.  For this application, the rotor frequency can change, which may not give the LIA filters enough time to settle.  If there is a very stable and accurate rotor speed controller, this method would be ideal because it extracts the signal of interest despite the high noise and distortions in the measurement.
 
 \begin{figure}
 	\centering
@@ -124,7 +124,7 @@ Lock-in amplifiers are typically used when the frequency is relatively stable an
 \subsubsection{Types of low-pass filters}
 The filter choice is very important for a lock-in amplifier.  Some of the common options are finite impulse response (FIR) filters, and infinite impulse response (IIR) filters, and the Savitzky-Golay (SG) filter.
 
-The IIR filter is shown in Figure \ref{fig:freq_mag_IIR_filter}, which significantly smooths the data, but at the cost of some time-domain distortion.  An IIR filter uses past states in the output calculation, meaning an impulse input signal will affect the filter output forever (\textit{infinite} impulse response filter).  This results in a transfer function as follows:
+The IIR filter is shown in Figure \ref{fig:IIR_block_diagram}, which significantly smooths the data, but at the cost of some time-domain distortion.  An IIR filter uses past states in the output calculation, meaning an impulse input signal will affect the filter output forever (\textit{infinite} impulse response filter).  This results in a transfer function as follows:
 
 \begin{equation} \label{eq:IIR_tf}
 	T(z) = \frac{b(z)}{a(z)}
@@ -189,11 +189,11 @@ The filtered data can then be calculated as the convolution of $\mat{C}$ and the
 
 
 \subsection{Identifying the rotor frequency from the tower accelerations}
-If the rotor frequency cannot be measured directly it is possible to obtain the frequency indirectly from the acceleration data.  A phase-locked loop is a control system that minimizes the phase between to signals.  As the phase error is driven to zero, the output signal frequency approaches the input signal's frequency.  Phase-locked loops (PLLs) are commonly used in telecommunications where the frequency of a noisy signal can be recreated with an internal oscillator that locks on to the frequency of the noisy signal.  Figure \ref{fig:PLL_diagram} shows a block diagram of the PLL implementation with tower acceleration data as the input.
+If the rotor frequency cannot be measured directly, it is possible to obtain the frequency indirectly from the acceleration data.  A phase-locked loop is a control system that minimizes the phase between to signals.  As the phase error is driven to zero, the output signal frequency approaches the input signal's frequency.  Phase-locked loops (PLLs) are commonly used in telecommunications where the frequency of a noisy signal can be recreated with an internal oscillator that locks on to the frequency of the noisy signal.  Figure \ref{fig:PLL_diagram} shows a block diagram of the PLL implementation with tower acceleration data as the input.
 
 The first stage of the frequency detection is a narrow bandpass filter to get rid of high frequency noise and natural frequency resonance of the tower.  This is multiplied by an internal oscillator that starts at an arbitrary frequency (a guess that is close to the actual frequency, but not necessarily accurate).  This signal is passed through a lowpass filter to provide a steady phase error.  The phase error is driven to 0 using a PID controller.  This outputs the correct frequency of the signal that is then fed back and multiplied with the input signal.
 
-One of the problems with a phase-locked loop is the PID controller gains depend on the amplitude of the signal, which changes depending on the amount of imbalance and rotor frequency.  The simplest approach to this would be to normalize the accelerations with the expected frequency.  This, however, is not perfect and doesn't account for the acceleration variation due to different eccentric masses.  A better solution would be to use a simple envelope detector to determine the amplitude of signal.  The accelerations can be divided by the output of the envelope detector to normalize the signal.  Figure \ref{fig:envelope_detector} shows an example of a simple envelope detector\cite{envelope_detector_ref}.  The low-pass filter in the envelope detector can be designed based on the desired accuracy.  For high computational efficiency, an averaging filter can be used because it minimizes the amount of multiply operations, and reduces the filter calculation to summations only.
+One of the problems with a phase-locked loop is that the PID controller gains depend on the amplitude of the signal, which changes depending on the amount of imbalance and rotor frequency.  The simplest approach to this would be to normalize the accelerations with the expected frequency.  This, however, is not perfect and doesn't account for the acceleration variation due to different eccentric masses.  A better solution would be to use a simple envelope detector to determine the amplitude of signal.  The accelerations can be divided by the output of the envelope detector to normalize the signal.  Figure \ref{fig:envelope_detector} shows an example of a simple envelope detector\cite{envelope_detector_ref}.  The low-pass filter in the envelope detector can be designed based on the desired accuracy.  For high computational efficiency, an averaging filter can be used because it minimizes the amount of multiply operations, and reduces the filter calculation to summations only.
 
 \begin{figure}
 	\centering
@@ -249,7 +249,7 @@ A very powerful method for reducing the computational cost of the FFT calculatio
 
 One of the main tradeoffs for the reduced computational load, is a reduced frequency spectrum range.  For example, a set of 1024 data points sampled at $F_s$, will produce a frequency spectrum from $0$ to $F_s/2$ using the standard FFT.  A zoom FFT with a decimation rate of $D=10$ can produce a frequency spectrum with a range of $F_s/20$ at 1/10th the computational cost.
 
-If the frequency of the rotor is not precisely known, then a lock-in amplifier is difficult to implement.  In order to detect excitation at the rotor frequency, the time-domain data can be transformed into the frequency domain.  A discrete Fourier transform (DFT) is the frequency domain representation of a sampled signal; however, can be slow and difficult to calculate on a microcontroller.
+If the frequency of the rotor is not precisely known, then a lock-in amplifier is difficult to implement.  In order to detect excitation at the rotor frequency, the time-domain data can be transformed into the frequency domain.  A discrete Fourier transform (DFT) is the frequency domain representation of a sampled signal; however, it can be slow and difficult to calculate on a microcontroller.
 
 To efficiently calculate the Fourier transform, the DFT matrix can be factored and the complexity reduced from $O(n^2)$ to $O(n \log{n})$.  This efficient algorithm is called the fast Fourier transform (FFT).  Despite being much more efficient than the standard DFT, a generic FFT is still inefficient for this application because most of the frequency data occurs outside the bandwidth of interest and is thrown away.  This can be fixed by applying a zoom FFT algorithm.
 

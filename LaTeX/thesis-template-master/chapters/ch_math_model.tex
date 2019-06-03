@@ -14,7 +14,7 @@ This problem is treated as forced vibration, where the forcing function is a per
 
 \begin{figure}
 	\centering
-	\includegraphics[scale=0.5]{annotated_tower}
+	\includegraphics[scale=0.4]{annotated_tower}
 	\decoRule
 	\caption{The simplified wind turbine model showing the forces from an eccentric mass on the rotor.  This figure also shows the coordinate system that will be used for the tower analysis and is created using a Draw.io overlay on a SolidWorks model.}
 	\label{fig:annotated_tower}
@@ -23,8 +23,7 @@ This problem is treated as forced vibration, where the forcing function is a per
 %----------------------------------------------------------------------------------------
 %	VARIABLE DEFINITIONS
 %----------------------------------------------------------------------------------------
-
-\section{Variable Definitions}
+%\section{Variable Definitions}
 
 \begin{table}[] \label{t:variable_definitions}
 \caption{Variable Definitions}
@@ -111,7 +110,7 @@ $$
 %	DETERMINING EFFECTIVE SPRING CONSTANT
 %----------------------------------------------------------------------------------------
 \subsection{Determining Effective Spring Constant}
-The tower model has a different spring constant for the $x$ and $y$ directions.  In the $y$ direction, the ginpole has a negligible effect on the stiffness of the tower, so the tower acts as a tapered cantilever beam. 
+The tower model has a different spring constant for the $x$ and $y$ directions.  In the $y$ direction, the gin pole has a negligible effect on the stiffness of the tower, so the tower acts as a tapered cantilever beam. 
 
 
 %	Deriving the y-direction spring constant
@@ -192,7 +191,7 @@ where,
 	&+t\,\ln\left(-z_{0}\,\left(d_{b}+t\,\left(-1+1{}\mathrm{i}\right)\right)\right)\,\left(-1+1{}\mathrm{i}\right)
 \end{align*}
 
-At this point, it has become clear that an analytic solution for the spring constant is not practical.  Integrating the slope equation (Equation \ref{eq:theta_analytic}) would produce the deflection equation; however this integral become extremely complicated.  A cleaner option is to calculate the spring constants numerically.
+At this point, it becomes clear that an analytic solution for the spring constant is not practical.  Integrating the slope equation (Equation \ref{eq:theta_analytic}) would produce the deflection equation; however this integral becomes extremely complicated.  A cleaner option is to calculate the spring constants numerically.
 
 \subsubsection{Numerical calculation of the $y$-direction spring constant, $K_y$}
 To determine the spring constant numerically, a vector of $z$ values must be created to be used in the numerical integration. 
@@ -254,7 +253,7 @@ $f_y$ & 0.59 Hz & 0.58 Hz & 0.59 Hz\\ \hline
 \end{table}
 
 Table \ref{t:ky_values} shows the calculated spring constant values and natural frequencies in the $y$-direction for the turbine parameters.  The constant top area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the top of the tower.  The constant bottom area value is the spring constant calculated assuming a uniform circular cross-section beam with a profile equal to the bottom of the tower.  The FEA values are derived in Tom Gwon's analysis \cite{Gwon_paper}, although it is unclear whether these values apply for the $y$ or $x$ direction.  The tapered beam calculation is performed in MATLAB using the following code (with turbine parameters listed in Table \ref{t:MATLAB_ky_variables}):
-
+\Needspace{5\baselineskip}
 \begin{lstlisting}
 z = linspace(0, z_0, 1000); % [m] Create the vector of z values
 M_F = (z - z_0); % [m] The moment equation with respect to the applied force (M/F)
